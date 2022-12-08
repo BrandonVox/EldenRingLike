@@ -19,20 +19,30 @@ public:
 	// virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void RequestAttack();
+	void RequestRoll();
 
 
 
 	void Combo();
 	void ResetCombat();
+	void RotateCharacter(const float& DeltaTime);
 
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void Attack();
+
 
 private:
 	bool CanAttack();
 	bool CanCombo();
+	bool CanRoll();
+
+	void Attack();
+	void Roll();
+
+
+
+	FRotator GetRollRotation();
 
 private:
 	UPROPERTY()
@@ -49,8 +59,13 @@ private:
 
 
 	UPROPERTY(EditAnywhere, Category = Attack)
-		TArray<UAnimMontage*> NormalAttackMontages;
+	TArray<UAnimMontage*> NormalAttackMontages;
 
+	UPROPERTY(EditAnywhere, Category = Roll)
+	UAnimMontage* RollMontage;
+
+	UPROPERTY(EditAnywhere, Category = Roll)
+	float RotateSpeed;
 
 public:	
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }

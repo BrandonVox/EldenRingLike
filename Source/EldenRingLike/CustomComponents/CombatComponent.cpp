@@ -2,6 +2,8 @@
 
 #include "CombatComponent.h"
 #include "GameFramework/Character.h" // Character
+#include "GameFramework/CharacterMovementComponent.h" // Character.GetCharacterMovement()
+#include "Kismet/KismetMathLibrary.h" //
 
 UCombatComponent::UCombatComponent()
 {
@@ -39,6 +41,14 @@ void UCombatComponent::RequestAttack()
 	}
 }
 
+void UCombatComponent::RequestRoll()
+{
+	if (CanRoll())
+	{
+		Roll(); 
+	}
+}
+
 bool UCombatComponent::CanAttack()
 {
 	return 
@@ -49,6 +59,21 @@ bool UCombatComponent::CanAttack()
 bool UCombatComponent::CanCombo()
 {
 	return NormalAttackMontages.IsEmpty() == false;
+}
+
+bool UCombatComponent::CanRoll()
+{
+	// Character is in air -> false
+	if (Character 
+		&& Character->GetCharacterMovement() 
+		&& Character->GetCharacterMovement()->IsFalling())
+	{
+		return false;
+	}
+	
+	return
+		CombatState == ECombatState::ECS_Free 
+		|| CombatState == ECombatState::ECS_Attack;
 }
 
 // Reach Combo Anim Notify
@@ -90,4 +115,51 @@ void UCombatComponent::Attack()
 		AttackIndex ++;
 	}
 }
+
+void UCombatComponent::Roll()
+{
+	if (Character == nullptr)
+	{
+		return;
+	}
+
+	if (RollMontage)
+	{
+		Character->PlayAnimMontage(RollMontage);
+		CombatState = ECombatState::ECS_Roll;
+	}
+}
+
+void UCombatComponent::RotateCharacter(const float& DeltaTime)
+{
+	if (Character == nullptr )
+	{
+		return;
+	}
+	
+	FRotator RollRotation = GetRollRotation();
+	RollRotation = FMath::RInterpTo(Character->GetActorRotation(), RollRotation, DeltaTime, RotateSpeed);
+	Character->SetActorRotation(RollRotation);
+}
+
+FRotator UCombatComponent::GetRollRotation()
+{
+	if (!Character || !Character->GetCharacterMovement())
+	{
+		return FRotator();
+	}
+
+	FRotator RollRotation;
+	if (Character->GetCharacterMovement()->GetLastInputVector().Size() > 0.f)
+	{
+		RollRotation = UKismetMathLibrary::MakeRotFromX(Character->GetLastMovementInputVector());
+	}
+	else
+	{
+		RollRotation = Character->GetActorRotation();
+	}
+
+	return RollRotation;
+}
+
 

@@ -2,9 +2,13 @@
 
 
 #include "ResetCombatAnimNotify.h"
-
-#include "Components/SkeletalMeshComponent.h"
 #include "EldenRingLike/Characters/EldenCharacter.h"
+
+UResetCombatAnimNotify::UResetCombatAnimNotify()
+{
+	
+	NotifyColor = FColor::Green;
+}
 
 void UResetCombatAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {

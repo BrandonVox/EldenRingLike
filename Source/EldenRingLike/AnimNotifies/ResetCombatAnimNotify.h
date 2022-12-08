@@ -15,6 +15,7 @@ class ELDENRINGLIKE_API UResetCombatAnimNotify : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	UResetCombatAnimNotify();
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 	
 };

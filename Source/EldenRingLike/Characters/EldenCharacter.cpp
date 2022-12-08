@@ -39,6 +39,7 @@ void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// Pressed
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AEldenCharacter::AttackButtonPressed);
+	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &AEldenCharacter::RollButtonPressed);
 
 	// Axises
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEldenCharacter::MoveForward);
@@ -72,6 +73,14 @@ void AEldenCharacter::ResetCombat()
 	}
 }
 
+void AEldenCharacter::RotateCharacter(const float& DeltaTime)
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RotateCharacter(DeltaTime);
+	}
+}
+
 
 void AEldenCharacter::BeginPlay()
 {
@@ -96,6 +105,14 @@ void AEldenCharacter::AttackButtonPressed()
 	if (CombatComponent)
 	{
 		CombatComponent->RequestAttack();
+	}
+}
+
+void AEldenCharacter::RollButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestRoll();
 	}
 }
 

@@ -21,12 +21,18 @@ public:
 	// virtual void Tick(float DeltaTime) override;
 	void Combo();
 	void ResetCombat();
+	void RotateCharacter(const float& DeltaTime);
 
 
 protected:
 	void BeginPlay() override;
 
+	/*
+	* Actions
+	* Pressed
+	*/
 	void AttackButtonPressed();
+	void RollButtonPressed();
 
 	// Axes
 	void MoveForward(float Value);
