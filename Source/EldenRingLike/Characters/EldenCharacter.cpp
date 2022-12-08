@@ -3,6 +3,7 @@
 #include "Camera/CameraComponent.h" // FollowCamera
 
 #include "GameFramework/CharacterMovementComponent.h" // GetCharacterMovement()
+#include "EldenRingLike/CustomComponents/CombatComponent.h" // CombatComponent
 
 AEldenCharacter::AEldenCharacter()
 {
@@ -26,6 +27,9 @@ AEldenCharacter::AEldenCharacter()
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 700;
 
+	// Components
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+
 }
 
 void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -34,13 +38,38 @@ void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	// Pressed
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	// PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ACombatCharacter::AttackButtonPressed);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AEldenCharacter::AttackButtonPressed);
 
 	// Axises
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEldenCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AEldenCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("LookUp", this, &AEldenCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &AEldenCharacter::Turn);
+}
+
+void AEldenCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (CombatComponent)
+	{
+		CombatComponent->SetCharacter(this);
+	}
+}
+
+void AEldenCharacter::Combo()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->Combo();
+	}
+}
+
+void AEldenCharacter::ResetCombat()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->ResetCombat();
+	}
 }
 
 
@@ -50,11 +79,25 @@ void AEldenCharacter::BeginPlay()
 	
 }
 
+
+
 //void AEldenCharacter::Tick(float DeltaTime)
 //{
 //	Super::Tick(DeltaTime);
 //
 //}
+
+/*
+* Actions
+* Pressed
+*/
+void AEldenCharacter::AttackButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestAttack();
+	}
+}
 
 /*
 * Axes

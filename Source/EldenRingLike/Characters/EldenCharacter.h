@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "EldenCharacter.generated.h"
 
+class UCombatComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -16,19 +17,22 @@ class ELDENRINGLIKE_API AEldenCharacter : public ACharacter
 public:
 	AEldenCharacter();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void PostInitializeComponents() override;
 	// virtual void Tick(float DeltaTime) override;
+	void Combo();
+	void ResetCombat();
 
 
 protected:
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 
-	// virtual void AttackButtonPressed();
+	void AttackButtonPressed();
 
 	// Axes
-	virtual void MoveForward(float Value);
-	virtual void MoveRight(float Value);
-	virtual void LookUp(float Value);
-	virtual void Turn(float Value);
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+	void LookUp(float Value);
+	void Turn(float Value);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -36,6 +40,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere)
+	UCombatComponent* CombatComponent;
 public:	
 
 
