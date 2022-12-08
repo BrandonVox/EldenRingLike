@@ -24,6 +24,7 @@ AEldenCharacter::AEldenCharacter()
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->GravityScale = 1.75f;
 	GetCharacterMovement()->AirControl = 0.35f;
+	GetCharacterMovement()->MaxWalkSpeed = 700;
 
 }
 
