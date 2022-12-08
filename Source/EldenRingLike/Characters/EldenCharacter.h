@@ -22,7 +22,7 @@ public:
 	void Combo();
 	void ResetCombat();
 	void RotateCharacter(const float& DeltaTime);
-
+	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
 	void BeginPlay() override;
@@ -31,6 +31,7 @@ protected:
 	* Actions
 	* Pressed
 	*/
+	virtual void Jump() override;
 	void AttackButtonPressed();
 	void RollButtonPressed();
 

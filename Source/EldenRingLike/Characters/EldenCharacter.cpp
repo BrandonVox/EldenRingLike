@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h" // GetCharacterMovement()
 #include "EldenRingLike/CustomComponents/CombatComponent.h" // CombatComponent
 
+#include "Animation/AnimInstance.h"
+
 AEldenCharacter::AEldenCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -37,7 +39,7 @@ void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Pressed
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AEldenCharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AEldenCharacter::AttackButtonPressed);
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &AEldenCharacter::RollButtonPressed);
 
@@ -81,6 +83,27 @@ void AEldenCharacter::RotateCharacter(const float& DeltaTime)
 	}
 }
 
+void AEldenCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Landed"));
+
+
+	// Cancel attack when landing
+	if (GetMesh() == nullptr || CombatComponent == nullptr)
+	{
+		return;
+	}
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (CombatComponent->IsAttacking() && AnimInstance)
+	{
+		AnimInstance->StopAllMontages(0.3f);
+		CombatComponent->ResetCombat();
+	}
+	
+
+}
+
 
 void AEldenCharacter::BeginPlay()
 {
@@ -96,15 +119,33 @@ void AEldenCharacter::BeginPlay()
 //
 //}
 
+void AEldenCharacter::Jump()
+{
+	if (CombatComponent && CombatComponent->IsAttacking())
+	{
+		return;
+	}
+	Super::Jump();
+}
+
 /*
 * Actions
 * Pressed
 */
 void AEldenCharacter::AttackButtonPressed()
 {
-	if (CombatComponent)
+	if (CombatComponent == nullptr)
 	{
-		CombatComponent->RequestAttack();
+		return;
+	}
+
+	if (GetCharacterMovement() && GetCharacterMovement()->IsFalling())
+	{
+		CombatComponent->RequestAttack(EAttackType::EAT_AirAttack);
+	}
+	else
+	{
+		CombatComponent->RequestAttack(EAttackType::EAT_NormalAttack);
 	}
 }
 

@@ -18,7 +18,7 @@ public:
 	UCombatComponent();
 	// virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void RequestAttack();
+	void RequestAttack(const EAttackType& AttackType);
 	void RequestRoll();
 
 
@@ -36,30 +36,33 @@ private:
 	bool CanAttack();
 	bool CanCombo();
 	bool CanRoll();
-
-	void Attack();
+	bool IsInAir();
+	void Attack(const EAttackType& AttackType);
+	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 	void Roll();
-
-
-
 	FRotator GetRollRotation();
+	UAnimMontage* GetAttackMontage(const EAttackType& AttackType);
 
 private:
 	UPROPERTY()
 	ACharacter* Character;
 
-
-
-
-	UPROPERTY()
 	ECombatState CombatState = ECombatState::ECS_Free;
 	int16 AttackIndex = 0;
 	bool bIsSavingAttack = false;
 
+	EAttackType LastAttackType = EAttackType::EAT_NormalAttack;
+	EAttackType SaveAttackType = EAttackType::EAT_NormalAttack;
 
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	TArray<UAnimMontage*> NormalAttackMontages;
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	TArray<UAnimMontage*> AirAttackMontages;
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	UAnimMontage* StartChargeAttackMontage;
 
 	UPROPERTY(EditAnywhere, Category = Roll)
 	UAnimMontage* RollMontage;
@@ -69,5 +72,5 @@ private:
 
 public:	
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }
-		
+	FORCEINLINE const bool IsAttacking() { return CombatState == ECombatState::ECS_Attack; }
 };

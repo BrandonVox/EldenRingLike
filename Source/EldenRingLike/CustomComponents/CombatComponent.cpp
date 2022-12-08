@@ -27,17 +27,18 @@ void UCombatComponent::BeginPlay()
 //
 //}
 
-void UCombatComponent::RequestAttack()
+void UCombatComponent::RequestAttack(const EAttackType& AttackType)
 {
 	if (CombatState == ECombatState::ECS_Attack)
 	{
+		SaveAttackType = AttackType;
 		bIsSavingAttack = true;
 		return;
 	}
 
 	if (CanAttack())
 	{
-		Attack();
+		Attack(AttackType);
 	}
 }
 
@@ -51,22 +52,17 @@ void UCombatComponent::RequestRoll()
 
 bool UCombatComponent::CanAttack()
 {
-	return 
-		CombatState == ECombatState::ECS_Free 
-		&& NormalAttackMontages.IsEmpty() == false;
+	return CombatState == ECombatState::ECS_Free;
 }
 
 bool UCombatComponent::CanCombo()
 {
-	return NormalAttackMontages.IsEmpty() == false;
+	return true;
 }
 
 bool UCombatComponent::CanRoll()
 {
-	// Character is in air -> false
-	if (Character 
-		&& Character->GetCharacterMovement() 
-		&& Character->GetCharacterMovement()->IsFalling())
+	if (IsInAir())
 	{
 		return false;
 	}
@@ -76,7 +72,15 @@ bool UCombatComponent::CanRoll()
 		|| CombatState == ECombatState::ECS_Attack;
 }
 
+bool UCombatComponent::IsInAir()
+{
+	return Character
+		&& Character->GetCharacterMovement()
+		&& Character->GetCharacterMovement()->IsFalling();
+}
+
 // Reach Combo Anim Notify
+// Perform Save Attack
 void UCombatComponent::Combo()
 {
 	if (bIsSavingAttack)
@@ -84,7 +88,7 @@ void UCombatComponent::Combo()
 		bIsSavingAttack = false;
 		if (CanCombo())
 		{
-			Attack();
+			Attack(SaveAttackType);
 		}
 	}
 }
@@ -94,25 +98,27 @@ void UCombatComponent::ResetCombat()
 	CombatState = ECombatState::ECS_Free;
 	AttackIndex = 0;
 	bIsSavingAttack = false;
+	LastAttackType = EAttackType::EAT_NormalAttack;
+	SaveAttackType = EAttackType::EAT_NormalAttack;
 }
 
-void UCombatComponent::Attack()
+void UCombatComponent::Attack(const EAttackType& AttackType)
 {
-	if (Character == nullptr)
-	{
-		return;
-	}
-
-	if (AttackIndex > NormalAttackMontages.Num() - 1)
-	{
-		AttackIndex = 0;
-	}
-	UAnimMontage* MontageToPlay = NormalAttackMontages[AttackIndex];
+	UAnimMontage* MontageToPlay = GetAttackMontage(AttackType);
 	if (MontageToPlay)
 	{
-		Character->PlayAnimMontage(MontageToPlay);
+		PlayAnimMontage(MontageToPlay);
 		CombatState = ECombatState::ECS_Attack;
+		LastAttackType = AttackType;
 		AttackIndex ++;
+	}
+}
+
+void UCombatComponent::PlayAnimMontage(UAnimMontage* MontageToPlay)
+{
+	if (Character)
+	{
+		Character->PlayAnimMontage(MontageToPlay);
 	}
 }
 
@@ -160,6 +166,44 @@ FRotator UCombatComponent::GetRollRotation()
 	}
 
 	return RollRotation;
+}
+
+UAnimMontage* UCombatComponent::GetAttackMontage(const EAttackType& AttackType)
+{
+	if (LastAttackType != AttackType)
+	{
+		AttackIndex = 0;
+	}
+
+	switch (AttackType)
+	{
+	case EAttackType::EAT_NormalAttack:
+		if (NormalAttackMontages.IsEmpty())
+		{
+			return nullptr;
+		}
+		if (AttackIndex > NormalAttackMontages.Num() - 1)
+		{
+			AttackIndex = 0;
+		}
+		return NormalAttackMontages[AttackIndex];
+
+	case EAttackType::EAT_AirAttack:
+		if (AirAttackMontages.IsEmpty())
+		{
+			return nullptr;
+		}
+		if (AttackIndex > AirAttackMontages.Num() - 1)
+		{
+			AttackIndex = 0;
+		}
+		return AirAttackMontages[AttackIndex];
+
+	case EAttackType::EAT_ChargeAttack:
+		return StartChargeAttackMontage;
+	}
+
+	return nullptr;
 }
 
 
