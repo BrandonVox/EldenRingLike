@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "EldenRingLike/Types/Types.h"
 #include "EldenAnimInstance.generated.h"
 
 class ACharacter;
@@ -30,5 +31,17 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool bIsAccelerating = false;
-	
+
+	/*
+	* Strafe
+	*/
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	FRotator StrafeRotation;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float StrafeValue;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	EStrafeSide StrafeSide;
 };

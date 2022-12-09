@@ -15,3 +15,18 @@ enum class EAttackType : uint8
 	EAT_AirAttack UMETA(DisplayName = "AirAttack"),
 	EAT_ChargeAttack UMETA(DisplayName = "ChargeAttack")
 };
+
+
+UENUM(BlueprintType)
+enum class EStrafeSide : uint8
+{
+	ESS_Forward UMETA(DisplayName = "Forward"),
+	ESS_Backward UMETA(DisplayName = "Backward"),
+	ESS_Right UMETA(DisplayName = "Right"),
+	ESS_Left UMETA(DisplayName = "Left"),
+
+	ESS_ForwardRight UMETA(DisplayName = "ForwardRight"),
+	ESS_ForwardLeft UMETA(DisplayName = "ForwardLeft"),
+	ESS_BackwardRight UMETA(DisplayName = "BackwardRight"),
+	ESS_BackwardLeft UMETA(DisplayName = "BackwardLeft")
+};
