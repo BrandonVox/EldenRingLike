@@ -6,7 +6,7 @@
 
 void URotateCharacterAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime)
 {
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
+	// Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
 
 	if (MeshComp == nullptr)
 	{

@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h" // Character
 #include "GameFramework/CharacterMovementComponent.h" // Character.GetCharacterMovement()
 #include "Kismet/KismetMathLibrary.h" //
+#include "EldenRingLike/Interfaces/TargetInterface.h"
 
 UCombatComponent::UCombatComponent()
 {
@@ -62,10 +63,7 @@ bool UCombatComponent::CanCombo()
 
 bool UCombatComponent::CanRoll()
 {
-	if (IsInAir())
-	{
-		return false;
-	}
+
 	
 	return
 		CombatState == ECombatState::ECS_Free 
@@ -95,6 +93,18 @@ void UCombatComponent::Combo()
 
 void UCombatComponent::ResetCombat()
 {
+
+	if (CombatState == ECombatState::ECS_Roll)
+	{
+		ITargetInterface* TargetableCharacter = Cast<ITargetInterface>(Character);
+		if (TargetableCharacter && TargetableCharacter->IsTargeting())
+		{
+			Character->bUseControllerRotationYaw = true;
+			if (Character->GetCharacterMovement())
+				Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+		}
+	}
+
 	CombatState = ECombatState::ECS_Free;
 	AttackIndex = 0;
 	bIsSavingAttack = false;
@@ -129,11 +139,21 @@ void UCombatComponent::Roll()
 		return;
 	}
 
+	if (Character->bUseControllerRotationYaw)
+	{
+		Character->bUseControllerRotationYaw = false;
+		if(Character->GetCharacterMovement())
+			Character->GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+
 	if (RollMontage)
 	{
 		Character->PlayAnimMontage(RollMontage);
 		CombatState = ECombatState::ECS_Roll;
 	}
+
+
+
 }
 
 void UCombatComponent::RotateCharacter(const float& DeltaTime)

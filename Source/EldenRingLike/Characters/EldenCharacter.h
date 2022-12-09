@@ -3,14 +3,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "EldenRingLike/Interfaces/TargetInterface.h"
+#include "EldenRingLike/Interfaces/TargetedInterface.h"
 #include "EldenCharacter.generated.h"
 
 class UCombatComponent;
+class UTargetComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class ELDENRINGLIKE_API AEldenCharacter : public ACharacter
+class ELDENRINGLIKE_API AEldenCharacter : public ACharacter, public ITargetInterface, public ITargetedInterface
 {
 	GENERATED_BODY()
 
@@ -24,6 +27,23 @@ public:
 	void RotateCharacter(const float& DeltaTime);
 	virtual void Landed(const FHitResult& Hit) override;
 
+
+
+	/*
+	* Target Interface
+	*/
+	virtual FVector GetLocation() override;
+	virtual FVector GetCameraDirection() override;
+	virtual void SetupTarget(const bool& bDoTarget) override;
+	virtual void SetControllerRotation(const FRotator& NewRotation) override;
+	virtual float GetDistanceTo(const AActor* OtherActor) override;
+	virtual bool IsTargeting() override;
+	/*
+	* Targeted Interface
+	*/
+	virtual FVector GetTargetLocation() override;
+	
+
 protected:
 	void BeginPlay() override;
 
@@ -34,6 +54,7 @@ protected:
 	virtual void Jump() override;
 	void AttackButtonPressed();
 	void RollButtonPressed();
+	void TargetButtonPressed();
 
 	// Axes
 	void MoveForward(float Value);
@@ -50,6 +71,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UCombatComponent* CombatComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UTargetComponent* TargetComponent;
+
+	UPROPERTY(EditAnywhere, Category = TargetedProperties)
+	FName TargetSocketName;
 public:	
 
 

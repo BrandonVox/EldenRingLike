@@ -4,8 +4,9 @@
 
 #include "GameFramework/CharacterMovementComponent.h" // GetCharacterMovement()
 #include "EldenRingLike/CustomComponents/CombatComponent.h" // CombatComponent
+#include "EldenRingLike/CustomComponents/TargetComponent.h" // TargetComponent
 
-#include "Animation/AnimInstance.h"
+#include "EldenRingLike/AnimInstances/EldenAnimInstance.h"
 
 AEldenCharacter::AEldenCharacter()
 {
@@ -31,7 +32,7 @@ AEldenCharacter::AEldenCharacter()
 
 	// Components
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-
+	TargetComponent = CreateDefaultSubobject<UTargetComponent>(TEXT("TargetComponent"));
 }
 
 void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -42,6 +43,7 @@ void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AEldenCharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AEldenCharacter::AttackButtonPressed);
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &AEldenCharacter::RollButtonPressed);
+	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &AEldenCharacter::TargetButtonPressed);
 
 	// Axises
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEldenCharacter::MoveForward);
@@ -56,6 +58,11 @@ void AEldenCharacter::PostInitializeComponents()
 	if (CombatComponent)
 	{
 		CombatComponent->SetCharacter(this);
+	}
+
+	if (TargetComponent)
+	{
+		TargetComponent->SetTargetableObject(Cast<ITargetInterface>(this));
 	}
 }
 
@@ -102,6 +109,81 @@ void AEldenCharacter::Landed(const FHitResult& Hit)
 	}
 	
 
+}
+
+/*
+* Target Interface
+*/
+FVector AEldenCharacter::GetLocation()
+{
+	return GetActorLocation(); 
+}
+
+FVector AEldenCharacter::GetCameraDirection()
+{
+	if (FollowCamera == nullptr)
+	{
+		return FVector();
+	}
+	return FollowCamera->GetForwardVector();
+}
+
+void AEldenCharacter::SetupTarget(const bool& bDoTarget)
+{
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
+
+	UEldenAnimInstance* EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
+	if (EldenAnimInstance)
+	{
+		EldenAnimInstance->SetIsTargeting(bDoTarget);
+	}
+
+	if (bDoTarget)
+	{
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+	}
+	else
+	{
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+}
+
+void AEldenCharacter::SetControllerRotation(const FRotator& NewRotation)
+{
+	if (Controller)
+	{
+		Controller->SetControlRotation(NewRotation);
+	}
+}
+
+float AEldenCharacter::GetDistanceTo(const AActor* OtherActor)
+{
+	return GetDistanceTo(OtherActor);
+}
+
+bool AEldenCharacter::IsTargeting()
+{
+	if (TargetComponent == nullptr)
+	{
+		return false;
+	}
+
+	return TargetComponent->IsTargeting();
+}
+
+FVector AEldenCharacter::GetTargetLocation()
+{
+	if (GetMesh() == nullptr)
+	{
+		return FVector();
+	}
+
+	return GetMesh()->GetSocketLocation(TargetSocketName);
 }
 
 
@@ -154,6 +236,23 @@ void AEldenCharacter::RollButtonPressed()
 	if (CombatComponent)
 	{
 		CombatComponent->RequestRoll();
+	}
+}
+
+void AEldenCharacter::TargetButtonPressed()
+{
+	if (TargetComponent == nullptr)
+	{
+		return;
+	}
+
+	if (TargetComponent->IsTargeting())
+	{
+		TargetComponent->UnTarget();
+	}
+	else
+	{
+		TargetComponent->Target();
 	}
 }
 

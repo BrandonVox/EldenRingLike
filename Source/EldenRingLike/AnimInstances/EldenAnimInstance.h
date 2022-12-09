@@ -44,4 +44,10 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EStrafeSide StrafeSide;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bIsTargeting = false;
+
+public:
+	FORCEINLINE void SetIsTargeting(const bool& Value) { bIsTargeting = Value; }
 };
