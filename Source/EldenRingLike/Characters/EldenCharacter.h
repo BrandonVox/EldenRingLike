@@ -5,15 +5,22 @@
 #include "GameFramework/Character.h"
 #include "EldenRingLike/Interfaces/TargetInterface.h"
 #include "EldenRingLike/Interfaces/TargetedInterface.h"
+#include "EldenRingLike/Interfaces/AttackInterface.h"
 #include "EldenCharacter.generated.h"
 
 class UCombatComponent;
 class UTargetComponent;
+class UCollisionComponent;
+
 class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class ELDENRINGLIKE_API AEldenCharacter : public ACharacter, public ITargetInterface, public ITargetedInterface
+class ELDENRINGLIKE_API AEldenCharacter : 
+	public ACharacter, 
+	public ITargetInterface, 
+	public ITargetedInterface,
+	public IAttackInterface
 {
 	GENERATED_BODY()
 
@@ -42,6 +49,14 @@ public:
 	* Targeted Interface
 	*/
 	virtual FVector GetTargetLocation() override;
+
+	/*
+	* Attack Interface
+	*/
+	virtual FVector StartHitLocation() override;
+	virtual FVector EndHitLocation() override;
+	virtual void SetupHitDetection() override;
+	virtual void DetectHit() override;
 	
 
 protected:
@@ -75,8 +90,17 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UTargetComponent* TargetComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	UCollisionComponent* CollisionComponent;
+
 	UPROPERTY(EditAnywhere, Category = TargetedProperties)
 	FName TargetSocketName;
+
+
+	UPROPERTY(EditAnywhere, Category = HitDetection)
+	FName StartHitSocket;
+	UPROPERTY(EditAnywhere, Category = HitDetection)
+	FName EndHitSocket;
 public:	
 
 

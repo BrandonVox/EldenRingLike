@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h" // GetCharacterMovement()
 #include "EldenRingLike/CustomComponents/CombatComponent.h" // CombatComponent
 #include "EldenRingLike/CustomComponents/TargetComponent.h" // TargetComponent
+#include "EldenRingLike/CustomComponents/CollisionComponent.h"
 
 #include "EldenRingLike/AnimInstances/EldenAnimInstance.h"
 
@@ -30,9 +31,12 @@ AEldenCharacter::AEldenCharacter()
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 700;
 
-	// Components
+	/*
+	* Components
+	*/
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	TargetComponent = CreateDefaultSubobject<UTargetComponent>(TEXT("TargetComponent"));
+	CollisionComponent = CreateDefaultSubobject<UCollisionComponent>(TEXT("CollisionComponent"));
 }
 
 void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -63,6 +67,11 @@ void AEldenCharacter::PostInitializeComponents()
 	if (TargetComponent)
 	{
 		TargetComponent->SetTargetableObject(Cast<ITargetInterface>(this));
+	}
+
+	if (CollisionComponent)
+	{
+		CollisionComponent->SetAttackableObject(Cast<IAttackInterface>(this));
 	}
 }
 
@@ -186,20 +195,46 @@ FVector AEldenCharacter::GetTargetLocation()
 	return GetMesh()->GetSocketLocation(TargetSocketName);
 }
 
+FVector AEldenCharacter::StartHitLocation()
+{
+	if (GetMesh() == nullptr)
+	{
+		return FVector();
+	}
+	return GetMesh()->GetSocketLocation(StartHitSocket);
+}
+
+FVector AEldenCharacter::EndHitLocation()
+{
+	if (GetMesh() == nullptr)
+	{
+		return FVector();
+	}
+	return GetMesh()->GetSocketLocation(EndHitSocket);
+}
+
+void AEldenCharacter::SetupHitDetection()
+{
+	if (CollisionComponent)
+	{
+		CollisionComponent->ClearHittedActors();
+	}
+	
+}
+
+void AEldenCharacter::DetectHit()
+{
+	if (CollisionComponent)
+	{
+		CollisionComponent->DetectHit();
+	}
+}
 
 void AEldenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
-
-
-
-//void AEldenCharacter::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}
 
 void AEldenCharacter::Jump()
 {

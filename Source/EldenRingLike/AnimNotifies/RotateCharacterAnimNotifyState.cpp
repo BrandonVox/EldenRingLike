@@ -4,9 +4,14 @@
 #include "RotateCharacterAnimNotifyState.h"
 #include "EldenRingLike/Characters/EldenCharacter.h"
 
-void URotateCharacterAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime)
+
+
+void URotateCharacterAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp,
+	UAnimSequenceBase* Animation,
+	float FrameDeltaTime,
+	const FAnimNotifyEventReference& EventReference)
 {
-	// Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
 	if (MeshComp == nullptr)
 	{
@@ -17,5 +22,4 @@ void URotateCharacterAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshCom
 	{
 		EldenCharacter->RotateCharacter(FrameDeltaTime);
 	}
-
 }
