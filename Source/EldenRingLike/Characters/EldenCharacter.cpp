@@ -51,6 +51,7 @@ void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AEldenCharacter::AttackButtonPressed);
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &AEldenCharacter::RollButtonPressed);
 	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &AEldenCharacter::TargetButtonPressed);
+	PlayerInputComponent->BindAction("TestDeflect", IE_Pressed, this, &AEldenCharacter::TestDeflectButtonPressed);
 
 	// Axises
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEldenCharacter::MoveForward);
@@ -302,6 +303,11 @@ void AEldenCharacter::TargetButtonPressed()
 	}
 }
 
+void AEldenCharacter::TestDeflectButtonPressed()
+{
+	PlayAnimMontage(SwordDeflectMontage);
+}
+
 /*
 * Axes
 */
@@ -359,8 +365,9 @@ void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage,
 	{
 		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SWORD STRIKE");
 
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordStrikeImpact, HitLocation, FRotator());
-		UGameplayStatics::PlaySoundAtLocation(this, SwordStrikeSound, HitLocation);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation, FRotator());
+		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
+		PlayAnimMontage(SwordDeflectMontage);
 		return;
 	}
 	

@@ -45,6 +45,12 @@ void UCombatComponent::RequestAttack(const EAttackType& AttackType)
 
 void UCombatComponent::RequestRoll()
 {
+	if (CombatState == ECombatState::ECS_Roll)
+	{
+		bIsSavingRoll = true;
+		return;
+	}
+
 	if (CanRoll())
 	{
 		Roll(); 
@@ -63,11 +69,8 @@ bool UCombatComponent::CanCombo()
 
 bool UCombatComponent::CanRoll()
 {
-
-	
 	return
-		CombatState == ECombatState::ECS_Free 
-		|| CombatState == ECombatState::ECS_Attack;
+		CombatState == ECombatState::ECS_Free || CombatState == ECombatState::ECS_Attack;
 }
 
 bool UCombatComponent::IsInAir()
@@ -93,7 +96,6 @@ void UCombatComponent::Combo()
 
 void UCombatComponent::ResetCombat()
 {
-
 	if (CombatState == ECombatState::ECS_Roll)
 	{
 		ITargetInterface* TargetableCharacter = Cast<ITargetInterface>(Character);
@@ -110,6 +112,17 @@ void UCombatComponent::ResetCombat()
 	bIsSavingAttack = false;
 	LastAttackType = EAttackType::EAT_NormalAttack;
 	SaveAttackType = EAttackType::EAT_NormalAttack;
+
+
+	if (bIsSavingRoll)
+	{
+		bIsSavingRoll = false;
+		if (CanRoll())
+		{
+			Roll();
+		}
+	}
+	
 }
 
 void UCombatComponent::Attack(const EAttackType& AttackType)

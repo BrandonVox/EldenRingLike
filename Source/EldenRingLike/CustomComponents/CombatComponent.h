@@ -50,6 +50,7 @@ private:
 	ECombatState CombatState = ECombatState::ECS_Free;
 	int16 AttackIndex = 0;
 	bool bIsSavingAttack = false;
+	bool bIsSavingRoll = false;
 
 	EAttackType LastAttackType = EAttackType::EAT_NormalAttack;
 	EAttackType SaveAttackType = EAttackType::EAT_NormalAttack;

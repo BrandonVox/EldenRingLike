@@ -70,6 +70,7 @@ protected:
 	void AttackButtonPressed();
 	void RollButtonPressed();
 	void TargetButtonPressed();
+	void TestDeflectButtonPressed();
 
 	// Axes
 	void MoveForward(float Value);
@@ -120,17 +121,23 @@ private:
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	USoundBase* HitSound;
 
-	UPROPERTY(EditAnywhere, Category = Hitted)
-	USoundBase* SwordStrikeSound;
+
 
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UParticleSystem* HitImpact;
 
-	UPROPERTY(EditAnywhere, Category = Hitted)
-	UParticleSystem* SwordStrikeImpact;
+
 
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitMontage_Front;
+
+
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	USoundBase* SwordDeflectSound;
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UParticleSystem* SwordDeflectImpact;
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UAnimMontage* SwordDeflectMontage;
 
 public:	
 
