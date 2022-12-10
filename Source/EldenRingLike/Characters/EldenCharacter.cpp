@@ -354,28 +354,18 @@ void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage,
 	AActor* DamageCauser)
 {
 
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, BoneName.ToString());
+	if (BoneName == TEXT("weapon_r"))
+	{
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SWORD STRIKE");
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "Hit something");
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordStrikeImpact, HitLocation, FRotator());
+		UGameplayStatics::PlaySoundAtLocation(this, SwordStrikeSound, HitLocation);
+		return;
+	}
+	
+	
 	HandleHitted(HitLocation, ShotFromDirection);
-
-
-	//// tru mau
-	//if (StatsComponent)
-	//{
-	//	StatsComponent->DecreaseHealth(Damage);
-	//	if (StatsComponent->GetHealth() <= 0.f)
-	//	{
-	//		HandleDead(HitLocation);
-	//	}
-	//	else
-	//	{
-	//		HandleHitted(HitLocation, ShotFromDirection);
-	//	}
-	//}
-
-
-
-
 
 }
 

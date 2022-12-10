@@ -54,7 +54,6 @@ private:
 	EAttackType LastAttackType = EAttackType::EAT_NormalAttack;
 	EAttackType SaveAttackType = EAttackType::EAT_NormalAttack;
 
-
 	UPROPERTY(EditAnywhere, Category = Attack)
 	TArray<UAnimMontage*> NormalAttackMontages;
 

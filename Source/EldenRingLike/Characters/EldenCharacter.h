@@ -121,7 +121,13 @@ private:
 	USoundBase* HitSound;
 
 	UPROPERTY(EditAnywhere, Category = Hitted)
+	USoundBase* SwordStrikeSound;
+
+	UPROPERTY(EditAnywhere, Category = Hitted)
 	UParticleSystem* HitImpact;
+
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UParticleSystem* SwordStrikeImpact;
 
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitMontage_Front;
