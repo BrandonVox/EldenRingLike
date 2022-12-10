@@ -70,7 +70,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = Roll)
 	float RotateSpeed;
 
-public:	
+public:
+	/*
+	* Getters
+	*/
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }
+	FORCEINLINE void SetCombatState(const ECombatState& Value) { CombatState = Value; }
+
+	/*
+	* Setters
+	*/
 	FORCEINLINE const bool IsAttacking() { return CombatState == ECombatState::ECS_Attack; }
 };

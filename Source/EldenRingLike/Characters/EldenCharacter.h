@@ -77,6 +77,17 @@ protected:
 	void LookUp(float Value);
 	void Turn(float Value);
 
+
+	UFUNCTION()
+	virtual void OnHitActor(const FHitResult& HitResult);
+
+	UFUNCTION()
+	virtual void OnTakeDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
+		FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
+		FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
+
+private:
+	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;
@@ -101,6 +112,20 @@ private:
 	FName StartHitSocket;
 	UPROPERTY(EditAnywhere, Category = HitDetection)
 	FName EndHitSocket;
+
+
+	/*
+	* Hitted
+	*/
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UParticleSystem* HitImpact;
+
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UAnimMontage* HitMontage_Front;
+
 public:	
 
 

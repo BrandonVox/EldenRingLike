@@ -7,7 +7,7 @@
 #include "EldenRingLike/Interfaces/AttackInterface.h"
 #include "CollisionComponent.generated.h"
 
-// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHitActorDelegate, const FHitResult&, HitResult);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHitActorDelegate, const FHitResult&, HitResult);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ELDENRINGLIKE_API UCollisionComponent : public UActorComponent
@@ -21,8 +21,8 @@ public:
 	void ClearHittedActors();
 	void DetectHit();
 
-	//UPROPERTY()
-	//FHitActorDelegate HitActorDelegate;
+	UPROPERTY()
+	FHitActorDelegate HitActorDelegate;
 
 protected:
 	virtual void BeginPlay() override;

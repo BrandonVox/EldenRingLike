@@ -55,25 +55,22 @@ void UCollisionComponent::DetectHit()
 		true
 	);
 
-	//if (bHitSomething)
-	//{
-	//	for (FHitResult HR : HitResults)
-	//	{
-	//		if (HR.bBlockingHit)
-	//		{
-	//			if (HR.GetActor())
-	//			{
-	//				// Luu vao mang Hitted Actors
-	//				if (HittedActors.Contains(HR.GetActor()) == false)
-	//				{
-	//					HittedActors.Emplace(HR.GetActor());
-	//					HitActorDelegate.Broadcast(HR);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 
+	// REWRITE
+	if (bHitSomething == false)
+	{
+		return;
+	}
+
+	for (const FHitResult& HR : HitResults)
+	{
+		AActor* HitActor = HR.GetActor();
+		if (HitActor && HittedActors.Contains(HitActor) == false)
+		{
+			HittedActors.Emplace(HitActor);
+			HitActorDelegate.Broadcast(HR);
+		}
+	}
 
 }
 

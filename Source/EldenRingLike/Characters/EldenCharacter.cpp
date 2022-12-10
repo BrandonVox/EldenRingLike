@@ -9,6 +9,9 @@
 
 #include "EldenRingLike/AnimInstances/EldenAnimInstance.h"
 
+
+#include "Kismet/GameplayStatics.h"
+
 AEldenCharacter::AEldenCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -73,6 +76,18 @@ void AEldenCharacter::PostInitializeComponents()
 	{
 		CollisionComponent->SetAttackableObject(Cast<IAttackInterface>(this));
 	}
+}
+
+void AEldenCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (CollisionComponent)
+	{
+		CollisionComponent->HitActorDelegate.AddDynamic(this, &AEldenCharacter::OnHitActor);
+	}
+
+	OnTakePointDamage.AddDynamic(this, &AEldenCharacter::OnTakeDamage);
 }
 
 void AEldenCharacter::Combo()
@@ -230,11 +245,7 @@ void AEldenCharacter::DetectHit()
 	}
 }
 
-void AEldenCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
+
 
 void AEldenCharacter::Jump()
 {
@@ -322,4 +333,61 @@ void AEldenCharacter::Turn(float Value)
 
 
 
+void AEldenCharacter::OnHitActor(const FHitResult& HitResult)
+{
+	// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Hit Actor");
+	UGameplayStatics::ApplyPointDamage(
+		HitResult.GetActor(),
+		20.f, //GetDamageOfLastAttack(),
+		GetActorForwardVector(),
+		HitResult,
+		GetController(),
+		this,
+		UDamageType::StaticClass()
+	);
+}
 
+void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage,
+	AController* InstigatedBy, FVector HitLocation,
+	UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType,
+	AActor* DamageCauser)
+{
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "Hit something");
+	HandleHitted(HitLocation, ShotFromDirection);
+
+
+	//// tru mau
+	//if (StatsComponent)
+	//{
+	//	StatsComponent->DecreaseHealth(Damage);
+	//	if (StatsComponent->GetHealth() <= 0.f)
+	//	{
+	//		HandleDead(HitLocation);
+	//	}
+	//	else
+	//	{
+	//		HandleHitted(HitLocation, ShotFromDirection);
+	//	}
+	//}
+
+
+
+
+
+}
+
+void AEldenCharacter::HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection)
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
+	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
+	PlayAnimMontage(HitMontage_Front);
+
+	if (CombatComponent)
+	{
+		CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
+	}
+
+}
