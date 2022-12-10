@@ -89,6 +89,8 @@ protected:
 
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
+	const bool IsAttacking();
+	const bool IsRolling();
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;

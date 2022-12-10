@@ -81,4 +81,5 @@ public:
 	* Setters
 	*/
 	FORCEINLINE const bool IsAttacking() { return CombatState == ECombatState::ECS_Attack; }
+	FORCEINLINE const bool IsRolling() { return CombatState == ECombatState::ECS_Roll; }
 };

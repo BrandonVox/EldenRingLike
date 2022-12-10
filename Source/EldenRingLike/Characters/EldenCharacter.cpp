@@ -250,10 +250,11 @@ void AEldenCharacter::DetectHit()
 
 void AEldenCharacter::Jump()
 {
-	if (CombatComponent && CombatComponent->IsAttacking())
+	if (IsRolling() || IsAttacking())
 	{
 		return;
 	}
+
 	Super::Jump();
 }
 
@@ -387,4 +388,22 @@ void AEldenCharacter::HandleHitted(const FVector& HitLocation, const FVector& Sh
 		CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
 	}
 
+}
+
+const bool AEldenCharacter::IsAttacking()
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->IsAttacking();
+}
+
+const bool AEldenCharacter::IsRolling()
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->IsRolling();
 }
