@@ -62,10 +62,7 @@ bool UCombatComponent::CanAttack()
 	return CombatState == ECombatState::ECS_Free;
 }
 
-bool UCombatComponent::CanCombo()
-{
-	return true;
-}
+
 
 bool UCombatComponent::CanRoll()
 {
@@ -92,6 +89,11 @@ void UCombatComponent::Combo()
 			Attack(SaveAttackType);
 		}
 	}
+}
+
+bool UCombatComponent::CanCombo()
+{
+	return true;
 }
 
 void UCombatComponent::ResetCombat()
@@ -135,8 +137,15 @@ void UCombatComponent::HandleFinishRoll()
 }
 
 
-void UCombatComponent::Attack(const EAttackType& AttackType)
+void UCombatComponent::Attack(EAttackType AttackType)
 {
+
+	// override attack type if is in air
+	if (AttackType == EAttackType::EAT_NormalAttack && IsInAir())
+	{
+		AttackType = EAttackType::EAT_AirAttack;
+	}
+
 	UAnimMontage* MontageToPlay = GetAttackMontage(AttackType);
 	if (MontageToPlay)
 	{
@@ -190,6 +199,11 @@ void UCombatComponent::ChargeAttack()
 const bool UCombatComponent::IsAttacking_Air()
 {
 	return IsAttacking() && LastAttackType == EAttackType::EAT_AirAttack;
+}
+
+const bool UCombatComponent::IsAttacking_ChargeAttack()
+{
+	return IsAttacking() && LastAttackType == EAttackType::EAT_ChargeAttack;
 }
 
 FRotator UCombatComponent::GetRollRotation()

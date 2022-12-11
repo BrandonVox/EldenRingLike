@@ -30,6 +30,7 @@ public:
 	void ChargeAttack();
 
 	const bool IsAttacking_Air();
+	const bool IsAttacking_ChargeAttack();
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,7 +40,7 @@ private:
 	bool CanCombo();
 	bool CanRoll();
 	bool IsInAir();
-	void Attack(const EAttackType& AttackType);
+	void Attack(EAttackType AttackType);
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 	void Roll();
 	void HandleFinishRoll();

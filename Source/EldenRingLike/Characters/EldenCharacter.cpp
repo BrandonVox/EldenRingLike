@@ -304,19 +304,8 @@ void AEldenCharacter::Jump()
 */
 void AEldenCharacter::AttackButtonPressed()
 {
-	if (CombatComponent == nullptr)
-	{
-		return;
-	}
-
-	if (GetCharacterMovement() && GetCharacterMovement()->IsFalling())
-	{
-		CombatComponent->RequestAttack(EAttackType::EAT_AirAttack);
-	}
-	else
-	{
+	if(CombatComponent)
 		CombatComponent->RequestAttack(EAttackType::EAT_NormalAttack);
-	}
 }
 
 
