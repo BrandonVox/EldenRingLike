@@ -113,21 +113,13 @@ void AEldenCharacter::RotateCharacter(const float& DeltaTime)
 void AEldenCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-	// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Landed"));
 
 
-	// Cancel attack when landing
-	if (GetMesh() == nullptr || CombatComponent == nullptr)
+	if (CombatComponent && CombatComponent->IsAttacking_Air())
 	{
-		return;
+		StopAllMontages();
+		ResetCombat();
 	}
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (CombatComponent->IsAttacking() && AnimInstance)
-	{
-		AnimInstance->StopAllMontages(0.3f);
-		CombatComponent->ResetCombat();
-	}
-	
 
 }
 
@@ -292,9 +284,15 @@ void AEldenCharacter::DetectHit()
 
 void AEldenCharacter::Jump()
 {
-	if (IsRolling() || IsAttacking())
+	if (IsRolling())
 	{
 		return;
+	}
+
+	if (IsAttacking())
+	{
+		StopAllMontages();
+		ResetCombat();
 	}
 
 	Super::Jump();
@@ -448,6 +446,20 @@ const bool AEldenCharacter::IsAttacking()
 		return false;
 	}
 	return CombatComponent->IsAttacking();
+}
+
+void AEldenCharacter::StopAllMontages()
+{
+	if(GetMesh() == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->StopAllMontages(0.3f);
+	}
 }
 
 

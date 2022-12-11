@@ -29,10 +29,10 @@ public:
 
 	void ChargeAttack();
 
+	const bool IsAttacking_Air();
+
 protected:
 	virtual void BeginPlay() override;
-
-
 
 private:
 	bool CanAttack();

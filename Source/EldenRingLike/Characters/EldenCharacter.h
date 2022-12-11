@@ -100,6 +100,7 @@ protected:
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
 	const bool IsAttacking();
+	void StopAllMontages();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)

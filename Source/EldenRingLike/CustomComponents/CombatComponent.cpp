@@ -187,6 +187,11 @@ void UCombatComponent::ChargeAttack()
 	PlayAnimMontage(ChargeAttackMontage); 
 }
 
+const bool UCombatComponent::IsAttacking_Air()
+{
+	return IsAttacking() && LastAttackType == EAttackType::EAT_AirAttack;
+}
+
 FRotator UCombatComponent::GetRollRotation()
 {
 	if (!Character || !Character->GetCharacterMovement())
