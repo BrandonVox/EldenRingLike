@@ -182,6 +182,11 @@ void UCombatComponent::RotateCharacter(const float& DeltaTime)
 	Character->SetActorRotation(RollRotation);
 }
 
+void UCombatComponent::ChargeAttack()
+{
+	PlayAnimMontage(ChargeAttackMontage); 
+}
+
 FRotator UCombatComponent::GetRollRotation()
 {
 	if (!Character || !Character->GetCharacterMovement())

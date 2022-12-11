@@ -27,6 +27,8 @@ public:
 	void ResetCombat();
 	void RotateCharacter(const float& DeltaTime);
 
+	void ChargeAttack();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -65,6 +67,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	UAnimMontage* StartChargeAttackMontage;
+
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	UAnimMontage* ChargeAttackMontage;
 
 	UPROPERTY(EditAnywhere, Category = Roll)
 	UAnimMontage* RollMontage;

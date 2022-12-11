@@ -49,6 +49,7 @@ void AEldenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// Pressed
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AEldenCharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AEldenCharacter::AttackButtonPressed);
+	PlayerInputComponent->BindAction("ChargeAttack", IE_Pressed, this, &AEldenCharacter::ChargeAttackButtonPressed);
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &AEldenCharacter::RollButtonPressed);
 	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &AEldenCharacter::TargetButtonPressed);
 	PlayerInputComponent->BindAction("TestDeflect", IE_Pressed, this, &AEldenCharacter::TestDeflectButtonPressed);
@@ -91,13 +92,7 @@ void AEldenCharacter::BeginPlay()
 	OnTakePointDamage.AddDynamic(this, &AEldenCharacter::OnTakeDamage);
 }
 
-void AEldenCharacter::Combo()
-{
-	if (CombatComponent)
-	{
-		CombatComponent->Combo();
-	}
-}
+
 
 void AEldenCharacter::ResetCombat()
 {
@@ -238,6 +233,26 @@ FVector AEldenCharacter::GetTargetLocation()
 	return GetMesh()->GetSocketLocation(TargetSocketName);
 }
 
+/*
+* Attack Interface
+*/
+void AEldenCharacter::Combo()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->Combo();
+	}
+}
+
+void AEldenCharacter::ChargeAttack()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->ChargeAttack();
+	}
+}
+
+
 FVector AEldenCharacter::StartHitLocation()
 {
 	if (GetMesh() == nullptr)
@@ -303,6 +318,15 @@ void AEldenCharacter::AttackButtonPressed()
 	else
 	{
 		CombatComponent->RequestAttack(EAttackType::EAT_NormalAttack);
+	}
+}
+
+
+void AEldenCharacter::ChargeAttackButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestAttack(EAttackType::EAT_ChargeAttack);
 	}
 }
 

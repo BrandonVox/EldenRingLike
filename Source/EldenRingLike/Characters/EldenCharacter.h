@@ -29,7 +29,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
 	// virtual void Tick(float DeltaTime) override;
-	void Combo();
 	void ResetCombat();
 	void RotateCharacter(const float& DeltaTime);
 	virtual void Landed(const FHitResult& Hit) override;
@@ -61,6 +60,8 @@ public:
 	/*
 	* Attack Interface
 	*/
+	virtual void Combo() override;
+	virtual void ChargeAttack() override;
 	virtual FVector StartHitLocation() override;
 	virtual FVector EndHitLocation() override;
 	virtual void SetupHitDetection() override;
@@ -76,6 +77,7 @@ protected:
 	*/
 	virtual void Jump() override;
 	void AttackButtonPressed();
+	void ChargeAttackButtonPressed();
 	void RollButtonPressed();
 	void TargetButtonPressed();
 	void TestDeflectButtonPressed();

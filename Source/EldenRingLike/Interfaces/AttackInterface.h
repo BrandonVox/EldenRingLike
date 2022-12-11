@@ -17,6 +17,10 @@ class ELDENRINGLIKE_API IAttackInterface
 	GENERATED_BODY()
 
 public:
+
+	virtual void Combo() = 0;
+	virtual void ChargeAttack() = 0;
+
 	virtual FVector StartHitLocation() = 0;
 	virtual FVector EndHitLocation() = 0;
 
