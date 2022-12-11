@@ -45,6 +45,9 @@ public:
 	virtual void SetControllerRotation(const FRotator& NewRotation) override;
 	virtual float GetDistanceTo(const AActor* OtherActor) override;
 	virtual bool IsTargeting() override;
+	virtual bool IsRolling() override;
+	virtual FRotator GetControllerRotation() override;
+
 	/*
 	* Targeted Interface
 	*/
@@ -90,7 +93,7 @@ protected:
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
 	const bool IsAttacking();
-	const bool IsRolling();
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;

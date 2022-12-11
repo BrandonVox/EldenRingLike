@@ -26,9 +26,12 @@ public:
 	virtual FVector GetCameraDirection() = 0;
 	virtual void SetupTarget(const bool& bDoTarget) = 0;
 	virtual void SetControllerRotation(const FRotator& NewRotation) = 0;
+	virtual FRotator GetControllerRotation() = 0;
 
 	virtual float GetDistanceTo(const AActor* OtherActor) = 0;
 
 	virtual bool IsTargeting() = 0;
+
+	virtual bool IsRolling() = 0;
 	
 };

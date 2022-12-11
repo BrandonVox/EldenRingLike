@@ -201,6 +201,20 @@ bool AEldenCharacter::IsTargeting()
 	return TargetComponent->IsTargeting();
 }
 
+bool AEldenCharacter::IsRolling()
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->IsRolling();
+}
+
+FRotator AEldenCharacter::GetControllerRotation()
+{
+	return Controller ? Controller->GetControlRotation() : FRotator::ZeroRotator;
+}
+
 FVector AEldenCharacter::GetTargetLocation()
 {
 	if (GetMesh() == nullptr)
@@ -399,11 +413,6 @@ const bool AEldenCharacter::IsAttacking()
 	return CombatComponent->IsAttacking();
 }
 
-const bool AEldenCharacter::IsRolling()
-{
-	if (CombatComponent == nullptr)
-	{
-		return false;
-	}
-	return CombatComponent->IsRolling();
-}
+
+
+

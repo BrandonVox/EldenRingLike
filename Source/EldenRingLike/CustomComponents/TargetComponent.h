@@ -7,7 +7,6 @@
 #include "EldenRingLike/Interfaces/TargetedInterface.h"
 #include "TargetComponent.generated.h"
 
-class ACharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ELDENRINGLIKE_API UTargetComponent : public UActorComponent
@@ -25,7 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void LookTarget();
+	void LookTarget(const float& DeltaTime);
 	void FindTarget();
 
 private:
@@ -58,6 +57,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float MaxTargetLength = 500.f;
+
+	UPROPERTY(EditAnywhere)
+	float LookSpeed = 5.f;
+
+
+	UPROPERTY()
+	FRotator CurrentRotation;
 
 public:	
 	FORCEINLINE void SetTargetableObject(ITargetInterface* Value) { TargetableObject = Value; }

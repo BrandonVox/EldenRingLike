@@ -96,15 +96,9 @@ void UCombatComponent::Combo()
 
 void UCombatComponent::ResetCombat()
 {
-	if (CombatState == ECombatState::ECS_Roll)
+	if (IsRolling())
 	{
-		ITargetInterface* TargetableCharacter = Cast<ITargetInterface>(Character);
-		if (TargetableCharacter && TargetableCharacter->IsTargeting())
-		{
-			Character->bUseControllerRotationYaw = true;
-			if (Character->GetCharacterMovement())
-				Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-		}
+		HandleFinishRoll();
 	}
 
 	CombatState = ECombatState::ECS_Free;
@@ -124,6 +118,26 @@ void UCombatComponent::ResetCombat()
 	}
 	
 }
+
+void UCombatComponent::HandleFinishRoll()
+{
+	/*
+	* if character is targeting
+	* rotate along controller
+	*/
+	if (Character == nullptr)
+	{
+		return;
+	}
+
+	ITargetInterface* TargetableCharacter = Cast<ITargetInterface>(Character);
+	if (TargetableCharacter && TargetableCharacter->IsTargeting())
+	{
+		Character->bUseControllerRotationYaw = true;
+	}
+	
+}
+
 
 void UCombatComponent::Attack(const EAttackType& AttackType)
 {
@@ -155,8 +169,6 @@ void UCombatComponent::Roll()
 	if (Character->bUseControllerRotationYaw)
 	{
 		Character->bUseControllerRotationYaw = false;
-		if(Character->GetCharacterMovement())
-			Character->GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 
 	if (RollMontage)
@@ -164,10 +176,8 @@ void UCombatComponent::Roll()
 		Character->PlayAnimMontage(RollMontage);
 		CombatState = ECombatState::ECS_Roll;
 	}
-
-
-
 }
+
 
 void UCombatComponent::RotateCharacter(const float& DeltaTime)
 {

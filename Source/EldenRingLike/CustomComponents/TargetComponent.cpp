@@ -29,7 +29,7 @@ void UTargetComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	if (bIsTargeting)
 	{
-		LookTarget();
+		LookTarget(DeltaTime);
 	}
 }
 
@@ -37,7 +37,7 @@ void UTargetComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UTargetComponent::FindTarget()
 {
 	// sphere trace de tim muc tieu
-	if (GetOwner() == nullptr)
+	if (TargetableObject == nullptr)
 	{
 		return;
 	}
@@ -71,6 +71,8 @@ void UTargetComponent::FindTarget()
 		if (TargetedObject)
 		{
 			TargetableObject->SetupTarget(true);
+			// setup current controller rotation
+			CurrentRotation = TargetableObject->GetControllerRotation();
 			bIsTargeting = true;
 		}
 
@@ -80,6 +82,7 @@ void UTargetComponent::FindTarget()
 }
 
 
+// request target
 void UTargetComponent::Target()
 {
 	FindTarget();
@@ -93,18 +96,10 @@ void UTargetComponent::UnTarget()
 }
 
 
-void UTargetComponent::LookTarget()
+void UTargetComponent::LookTarget(const float& DeltaTime)
 {
-	// huong camera den muc tieu
-	//if (TargetCharacter == nullptr)
-	//{
-	//	UnTarget();
-	//	return;
-	//}
-
 	if (TargetableObject == nullptr)
 	{
-		// UnTarget();
 		return;
 	}
 
@@ -112,15 +107,17 @@ void UTargetComponent::LookTarget()
 	{
 		return;
 	}
-
+	// get actor location
 	FVector StartLocation = TargetableObject->GetLocation();
 	StartLocation.Z += Offset_Z;
 
+	// get location to target
 	FVector EndLocation = TargetedObject->GetTargetLocation();
 
-	FRotator NewControllerRotation = (EndLocation - StartLocation).Rotation();
+	FRotator TargetRotation = (EndLocation - StartLocation).Rotation();
+	CurrentRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, LookSpeed);
 
-	TargetableObject->SetControllerRotation(NewControllerRotation);
+	TargetableObject->SetControllerRotation(CurrentRotation);
 
 
 	// neu khoang cach tu nguoi choi den 

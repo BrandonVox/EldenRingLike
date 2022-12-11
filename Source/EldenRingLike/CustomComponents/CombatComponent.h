@@ -40,8 +40,10 @@ private:
 	void Attack(const EAttackType& AttackType);
 	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 	void Roll();
+	void HandleFinishRoll();
 	FRotator GetRollRotation();
 	UAnimMontage* GetAttackMontage(const EAttackType& AttackType);
+
 
 private:
 	UPROPERTY()
