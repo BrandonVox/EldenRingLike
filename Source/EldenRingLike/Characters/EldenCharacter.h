@@ -42,11 +42,16 @@ public:
 	virtual FVector GetLocation() override;
 	virtual FVector GetCameraDirection() override;
 	virtual void SetupTarget(const bool& bDoTarget) override;
-	virtual void SetControllerRotation(const FRotator& NewRotation) override;
+
 	virtual float GetDistanceTo(const AActor* OtherActor) override;
 	virtual bool IsTargeting() override;
 	virtual bool IsRolling() override;
+
 	virtual FRotator GetControllerRotation() override;
+	virtual FRotator GetObjectRotation() override;
+	virtual FRotator ControllerYawRotation() override;
+	virtual void SetControllerRotation(const FRotator& NewRotation) override;
+	virtual void SetObjectRotation(const FRotator& NewRotation) override;
 
 	/*
 	* Targeted Interface

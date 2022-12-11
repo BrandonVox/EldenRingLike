@@ -155,26 +155,21 @@ FVector AEldenCharacter::GetCameraDirection()
 
 void AEldenCharacter::SetupTarget(const bool& bDoTarget)
 {
+	// set is targeting
 	if (GetMesh() == nullptr)
 	{
 		return;
 	}
-
 	UEldenAnimInstance* EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
 	if (EldenAnimInstance)
 	{
 		EldenAnimInstance->SetIsTargeting(bDoTarget);
 	}
 
-	if (bDoTarget)
+	// if targeting true = orient movement false
+	if (GetCharacterMovement())
 	{
-		bUseControllerRotationYaw = true;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-	}
-	else
-	{
-		bUseControllerRotationYaw = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bOrientRotationToMovement = !bDoTarget;
 	}
 }
 
@@ -184,6 +179,11 @@ void AEldenCharacter::SetControllerRotation(const FRotator& NewRotation)
 	{
 		Controller->SetControlRotation(NewRotation);
 	}
+}
+
+void AEldenCharacter::SetObjectRotation(const FRotator& NewRotation)
+{
+	SetActorRotation(NewRotation);
 }
 
 float AEldenCharacter::GetDistanceTo(const AActor* OtherActor)
@@ -213,6 +213,19 @@ bool AEldenCharacter::IsRolling()
 FRotator AEldenCharacter::GetControllerRotation()
 {
 	return Controller ? Controller->GetControlRotation() : FRotator::ZeroRotator;
+}
+
+FRotator AEldenCharacter::GetObjectRotation()
+{
+	return GetActorRotation();
+}
+
+FRotator AEldenCharacter::ControllerYawRotation()
+{
+	return FRotator(
+		GetActorRotation().Pitch,
+		GetControllerRotation().Yaw,
+		GetActorRotation().Roll);
 }
 
 FVector AEldenCharacter::GetTargetLocation()

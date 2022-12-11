@@ -72,7 +72,7 @@ void UTargetComponent::FindTarget()
 		{
 			TargetableObject->SetupTarget(true);
 			// setup current controller rotation
-			CurrentRotation = TargetableObject->GetControllerRotation();
+			CurrentRotation_Object = TargetableObject->GetObjectRotation();
 			bIsTargeting = true;
 		}
 
@@ -107,6 +107,7 @@ void UTargetComponent::LookTarget(const float& DeltaTime)
 	{
 		return;
 	}
+
 	// get actor location
 	FVector StartLocation = TargetableObject->GetLocation();
 	StartLocation.Z += Offset_Z;
@@ -114,18 +115,20 @@ void UTargetComponent::LookTarget(const float& DeltaTime)
 	// get location to target
 	FVector EndLocation = TargetedObject->GetTargetLocation();
 
-	FRotator TargetRotation = (EndLocation - StartLocation).Rotation();
-	CurrentRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, LookSpeed);
+	FRotator TargetControllerRotation = (EndLocation - StartLocation).Rotation();
+	TargetableObject->SetControllerRotation(TargetControllerRotation);
 
-	TargetableObject->SetControllerRotation(CurrentRotation);
+	
+	if (TargetableObject->IsRolling() == false)
+	{
+		CurrentRotation_Object = FMath::RInterpTo(
+			TargetableObject->GetObjectRotation(),
+			TargetableObject->ControllerYawRotation(),
+			DeltaTime,
+			RotateObjectSpeed);
+
+		TargetableObject->SetObjectRotation(CurrentRotation_Object);
+	}
 
 
-	// neu khoang cach tu nguoi choi den 
-	// muc tieu qua xa thi khong cho target nua
-	//const float DistanceToTarget = TargetableObject->GetDistanceTo(TargetCharacter);
-
-	//if (DistanceToTarget > MaxTargetLength)
-	//{
-	//	UnTarget();
-	//}
 }

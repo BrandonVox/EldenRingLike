@@ -59,11 +59,10 @@ private:
 	float MaxTargetLength = 500.f;
 
 	UPROPERTY(EditAnywhere)
-	float LookSpeed = 5.f;
-
+	float RotateObjectSpeed = 2.f;
 
 	UPROPERTY()
-	FRotator CurrentRotation;
+	FRotator CurrentRotation_Object;
 
 public:	
 	FORCEINLINE void SetTargetableObject(ITargetInterface* Value) { TargetableObject = Value; }

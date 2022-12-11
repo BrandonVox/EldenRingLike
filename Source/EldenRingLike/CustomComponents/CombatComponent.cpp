@@ -96,10 +96,6 @@ void UCombatComponent::Combo()
 
 void UCombatComponent::ResetCombat()
 {
-	if (IsRolling())
-	{
-		HandleFinishRoll();
-	}
 
 	CombatState = ECombatState::ECS_Free;
 	AttackIndex = 0;
@@ -164,11 +160,6 @@ void UCombatComponent::Roll()
 	if (Character == nullptr)
 	{
 		return;
-	}
-
-	if (Character->bUseControllerRotationYaw)
-	{
-		Character->bUseControllerRotationYaw = false;
 	}
 
 	if (RollMontage)
