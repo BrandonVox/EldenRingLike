@@ -12,9 +12,6 @@ class UCombatComponent;
 class UTargetComponent;
 class UCollisionComponent;
 
-class USpringArmComponent;
-class UCameraComponent;
-
 UCLASS()
 class ELDENRINGLIKE_API AEldenCharacter : 
 	public ACharacter, 
@@ -26,20 +23,19 @@ class ELDENRINGLIKE_API AEldenCharacter :
 
 public:
 	AEldenCharacter();
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
-	// virtual void Tick(float DeltaTime) override;
-	void ResetCombat();
-	void RotateCharacter(const float& DeltaTime);
+	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
-
-
-
+	/*
+	* Anim Notifies
+	*/
+	void RotateCharacter(const float& DeltaTime); 
+	void ResetCombat();
 	/*
 	* Target Interface
 	*/
 	virtual FVector GetLocation() override;
-	virtual FVector GetCameraDirection() override;
+	virtual FVector EndLocationToFindTarget() override;
 	virtual void SetupTarget(const bool& bDoTarget) override;
 
 	virtual float GetDistanceTo(const AActor* OtherActor) override;
@@ -51,12 +47,10 @@ public:
 	virtual FRotator ControllerYawRotation() override;
 	virtual void SetControllerRotation(const FRotator& NewRotation) override;
 	virtual void SetObjectRotation(const FRotator& NewRotation) override;
-
 	/*
 	* Targeted Interface
 	*/
 	virtual FVector GetTargetLocation() override;
-
 	/*
 	* Attack Interface
 	*/
@@ -71,22 +65,7 @@ public:
 protected:
 	void BeginPlay() override;
 
-	/*
-	* Actions
-	* Pressed
-	*/
-	virtual void Jump() override;
-	void AttackButtonPressed();
-	void ChargeAttackButtonPressed();
-	void RollButtonPressed();
-	void TargetButtonPressed();
-	void TestDeflectButtonPressed();
-
-	// Axes
-	void MoveForward(float Value);
-	void MoveRight(float Value);
-	void LookUp(float Value);
-	void Turn(float Value);
+	
 
 
 	UFUNCTION()
@@ -100,59 +79,49 @@ protected:
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
 	const bool IsAttacking();
-	void StopAllMontages();
+	void StopAllMontages(const float& BlendOutSeconds = 0.3f);
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-	USpringArmComponent* CameraBoom;
-
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-	UCameraComponent* FollowCamera;
-
+protected:
+	/*
+	* Components
+	*/
 	UPROPERTY(VisibleAnywhere)
 	UCombatComponent* CombatComponent;
-
 	UPROPERTY(VisibleAnywhere)
 	UTargetComponent* TargetComponent;
-
 	UPROPERTY(VisibleAnywhere)
 	UCollisionComponent* CollisionComponent;
-
-	UPROPERTY(EditAnywhere, Category = TargetedProperties)
-	FName TargetSocketName;
-
-
-	UPROPERTY(EditAnywhere, Category = HitDetection)
-	FName StartHitSocket;
-	UPROPERTY(EditAnywhere, Category = HitDetection)
-	FName EndHitSocket;
-
-
 	/*
-	* Hitted
+	* Sword Deflect
 	*/
-	UPROPERTY(EditAnywhere, Category = Hitted)
-	USoundBase* HitSound;
-
-
-
-	UPROPERTY(EditAnywhere, Category = Hitted)
-	UParticleSystem* HitImpact;
-
-
-
-	UPROPERTY(EditAnywhere, Category = Hitted)
-	UAnimMontage* HitMontage_Front;
-
-
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	USoundBase* SwordDeflectSound;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UParticleSystem* SwordDeflectImpact;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* SwordDeflectMontage;
+private:
+
+	
+	UPROPERTY(EditAnywhere, Category = TargetedProperties)
+	FName TargetSocketName;
+	/*
+	* Hit Detection
+	*/
+	UPROPERTY(EditAnywhere, Category = HitDetection)
+	FName StartHitSocket;
+	UPROPERTY(EditAnywhere, Category = HitDetection)
+	FName EndHitSocket;
+
+	/*
+	* Hitted
+	*/
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	USoundBase* HitSound;
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UParticleSystem* HitImpact;
+	UPROPERTY(EditAnywhere, Category = Hitted)
+	UAnimMontage* HitMontage_Front;
 
 public:	
-
-
 };

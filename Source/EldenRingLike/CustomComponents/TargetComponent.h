@@ -38,10 +38,10 @@ private:
 
 	// Trace
 	UPROPERTY(EditAnywhere)
-	float TraceRadius = 20.f;
+	float TraceRadius = 15.f;
 
 	UPROPERTY(EditAnywhere)
-	float TraceLength = 500.f;
+	float TraceLength = 1500.f;
 
 	UPROPERTY(EditAnywhere)
 	TArray<AActor*> ActorsToIgnore;
@@ -64,7 +64,14 @@ private:
 	UPROPERTY()
 	FRotator CurrentRotation_Object;
 
-public:	
+public:
+	/*
+	* Getters
+	*/
+	FORCEINLINE float GetTraceLength() const { return TraceLength; }
+	FORCEINLINE bool IsTargeting() const { return bIsTargeting; }
+	/*
+	* Setters
+	*/
 	FORCEINLINE void SetTargetableObject(ITargetInterface* Value) { TargetableObject = Value; }
-	FORCEINLINE const bool IsTargeting() { return bIsTargeting; }
 };

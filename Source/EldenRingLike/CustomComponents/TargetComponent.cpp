@@ -45,8 +45,7 @@ void UTargetComponent::FindTarget()
 	FHitResult HitResult;
 
 	const FVector StartLocation = TargetableObject->GetLocation();
-	FVector EndLocation =
-		StartLocation + TargetableObject->GetCameraDirection() * TraceLength;
+	FVector EndLocation = TargetableObject->EndLocationToFindTarget();
 
 	// Start of Sword -> End of Sword
 	bool bDoHit = UKismetSystemLibrary::SphereTraceSingleForObjects

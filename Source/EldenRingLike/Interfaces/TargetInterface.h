@@ -23,7 +23,9 @@ class ELDENRINGLIKE_API ITargetInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual FVector GetLocation() = 0;
-	virtual FVector GetCameraDirection() = 0;
+
+	virtual FVector EndLocationToFindTarget() = 0;
+
 	virtual void SetupTarget(const bool& bDoTarget) = 0;
 
 	virtual void SetControllerRotation(const FRotator& NewRotation) = 0;
