@@ -36,7 +36,7 @@ public:
 	*/
 	virtual FVector GetLocation() override;
 	virtual FVector EndLocationToFindTarget() override;
-	virtual void SetupTarget(const bool& bDoTarget) override;
+	virtual void StartFocusing(const bool& bDoTarget) override;
 
 	virtual float GetDistanceTo(const AActor* OtherActor) override;
 	virtual bool IsTargeting() override;

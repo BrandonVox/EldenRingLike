@@ -85,11 +85,11 @@ void APlayerCharacter::TargetButtonPressed()
 
 	if (TargetComponent->IsTargeting())
 	{
-		TargetComponent->UnTarget();
+		TargetComponent->UnFocus();
 	}
 	else
 	{
-		TargetComponent->Target();
+		TargetComponent->RequestFocus();
 	}
 }
 void APlayerCharacter::TestDeflectButtonPressed()

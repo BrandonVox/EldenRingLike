@@ -13,5 +13,11 @@ UCLASS()
 class ELDENRINGLIKE_API AEnemyCharacter : public AEldenCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	/*
+	* Targeted Interface
+	*/
+	virtual void FocusBack(AActor* EnemyActor) override;
+	virtual void UnTargeted() override;
 };

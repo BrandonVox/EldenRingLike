@@ -26,7 +26,7 @@ public:
 
 	virtual FVector EndLocationToFindTarget() = 0;
 
-	virtual void SetupTarget(const bool& bDoTarget) = 0;
+	virtual void StartFocusing(const bool& bDoTarget) = 0;
 
 	virtual void SetControllerRotation(const FRotator& NewRotation) = 0;
 	virtual void SetObjectRotation(const FRotator& NewRotation) = 0;

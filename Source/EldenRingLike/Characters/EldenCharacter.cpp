@@ -43,7 +43,7 @@ void AEldenCharacter::PostInitializeComponents()
 
 	if (TargetComponent)
 	{
-		TargetComponent->SetTargetableObject(Cast<ITargetInterface>(this));
+		TargetComponent->SetFocusObject(Cast<ITargetInterface>(this));
 	}
 
 	if (CollisionComponent)
@@ -108,20 +108,17 @@ FVector AEldenCharacter::EndLocationToFindTarget()
 	return FVector();
 }
 
-void AEldenCharacter::SetupTarget(const bool& bDoTarget)
+void AEldenCharacter::StartFocusing(const bool& bDoTarget)
 {
-	// set is targeting
-	if (GetMesh() == nullptr)
+	if (GetMesh())
 	{
-		return;
+		UEldenAnimInstance* EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
+		if (EldenAnimInstance)
+		{
+			EldenAnimInstance->SetIsTargeting(bDoTarget);
+		}
 	}
-	UEldenAnimInstance* EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
-	if (EldenAnimInstance)
-	{
-		EldenAnimInstance->SetIsTargeting(bDoTarget);
-	}
-
-	// if targeting true = orient movement false
+	
 	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = !bDoTarget;

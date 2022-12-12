@@ -17,8 +17,12 @@ public:
 	UTargetComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void Target();
-	void UnTarget();
+	void RequestFocus();
+	void UnFocus();
+	void UnTargeted();
+
+	// Enemy is focused and want to focus back
+	void FocusBack(AActor* EnemyActor);
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,13 +32,10 @@ private:
 	void FindTarget();
 
 private:
-	ITargetInterface* TargetableObject = nullptr;
-	ITargetedInterface* TargetedObject = nullptr;
-
-
+	ITargetInterface* FocusObject = nullptr;
+	ITargetedInterface* TargetObject = nullptr;
 
 	bool bIsTargeting = false;
-
 
 	// Trace
 	UPROPERTY(EditAnywhere)
@@ -58,11 +59,16 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxTargetLength = 500.f;
 
+
 	UPROPERTY(EditAnywhere)
-	float RotateObjectSpeed = 2.f;
+	float ObjectRotateSpeed = 6.f;
+	UPROPERTY(EditAnywhere)
+	float ControllerRotateSpeed = 11.f;
 
 	UPROPERTY()
-	FRotator CurrentRotation_Object;
+	FRotator ObjectRotation;
+	UPROPERTY()
+	FRotator ControllerRotation;
 
 public:
 	/*
@@ -73,5 +79,5 @@ public:
 	/*
 	* Setters
 	*/
-	FORCEINLINE void SetTargetableObject(ITargetInterface* Value) { TargetableObject = Value; }
+	FORCEINLINE void SetFocusObject(ITargetInterface* Value) { FocusObject = Value; }
 };

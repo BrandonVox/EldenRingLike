@@ -12,9 +12,9 @@ void UTargetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (TargetableObject == nullptr)
+	if (FocusObject == nullptr)
 	{
-		TargetableObject = Cast<ITargetInterface>(GetOwner());
+		FocusObject = Cast<ITargetInterface>(GetOwner());
 	}
 
 	if (GetOwner())
@@ -33,19 +33,23 @@ void UTargetComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	}
 }
 
+void UTargetComponent::RequestFocus()
+{
+	FindTarget();
+}
 
 void UTargetComponent::FindTarget()
 {
 	// sphere trace de tim muc tieu
-	if (TargetableObject == nullptr)
+	if (FocusObject == nullptr)
 	{
 		return;
 	}
 
 	FHitResult HitResult;
 
-	const FVector StartLocation = TargetableObject->GetLocation();
-	FVector EndLocation = TargetableObject->EndLocationToFindTarget();
+	const FVector StartLocation = FocusObject->GetLocation();
+	FVector EndLocation = FocusObject->EndLocationToFindTarget();
 
 	// Start of Sword -> End of Sword
 	bool bDoHit = UKismetSystemLibrary::SphereTraceSingleForObjects
@@ -62,71 +66,87 @@ void UTargetComponent::FindTarget()
 		true
 	);
 
-
 	if (bDoHit)
 	{
-
-		TargetedObject = Cast<ITargetedInterface>(HitResult.GetActor());
-		if (TargetedObject)
+		TargetObject = Cast<ITargetedInterface>(HitResult.GetActor());
+		if (TargetObject)
 		{
-			TargetableObject->SetupTarget(true);
-			// setup current controller rotation
-			CurrentRotation_Object = TargetableObject->GetObjectRotation();
+			FocusObject->StartFocusing(true);
+			ObjectRotation = FocusObject->GetObjectRotation();
+			ControllerRotation = FocusObject->GetControllerRotation();
 			bIsTargeting = true;
+			//
+			TargetObject->FocusBack(GetOwner());
 		}
-
 	}
-
-
 }
 
-
-// request target
-void UTargetComponent::Target()
+// EnemyCharacter
+void UTargetComponent::FocusBack(AActor* EnemyActor)
 {
-	FindTarget();
+	TargetObject = Cast<ITargetedInterface>(EnemyActor);
+	if (FocusObject && TargetObject)
+	{
+		FocusObject->StartFocusing(true);
+		ObjectRotation = FocusObject->GetObjectRotation();
+		ControllerRotation = FocusObject->GetControllerRotation();
+		bIsTargeting = true;
+	}
 }
 
-void UTargetComponent::UnTarget()
+void UTargetComponent::UnFocus()
 {
 	bIsTargeting = false;
-	TargetableObject->SetupTarget(false);
-	TargetedObject = nullptr;
+	FocusObject->StartFocusing(false);
+
+	TargetObject->UnTargeted();
+	TargetObject = nullptr;
 }
 
+// EnemyCharacter.h
+void UTargetComponent::UnTargeted()
+{
+	bIsTargeting = false;
+	FocusObject->StartFocusing(false);
+	TargetObject = nullptr;
+}
 
 void UTargetComponent::LookTarget(const float& DeltaTime)
 {
-	if (TargetableObject == nullptr)
+	if (FocusObject == nullptr)
 	{
 		return;
 	}
 
-	if (TargetedObject == nullptr)
+	if (TargetObject == nullptr)
 	{
 		return;
 	}
 
 	// get actor location
-	FVector StartLocation = TargetableObject->GetLocation();
+	FVector StartLocation = FocusObject->GetLocation();
 	StartLocation.Z += Offset_Z;
 
 	// get location to target
-	FVector EndLocation = TargetedObject->GetTargetLocation();
+	FVector EndLocation = TargetObject->GetTargetLocation();
 
 	FRotator TargetControllerRotation = (EndLocation - StartLocation).Rotation();
-	TargetableObject->SetControllerRotation(TargetControllerRotation);
+
+	ControllerRotation = FMath::RInterpTo(ControllerRotation,
+		TargetControllerRotation, DeltaTime, ControllerRotateSpeed);
+
+	FocusObject->SetControllerRotation(ControllerRotation);
 
 	
-	if (TargetableObject->IsRolling() == false)
+	if (FocusObject->IsRolling() == false)
 	{
-		CurrentRotation_Object = FMath::RInterpTo(
-			TargetableObject->GetObjectRotation(),
-			TargetableObject->ControllerYawRotation(),
+		ObjectRotation = FMath::RInterpTo(
+			FocusObject->GetObjectRotation(),
+			FocusObject->ControllerYawRotation(),
 			DeltaTime,
-			RotateObjectSpeed);
+			ObjectRotateSpeed);
 
-		TargetableObject->SetObjectRotation(CurrentRotation_Object);
+		FocusObject->SetObjectRotation(ObjectRotation);
 	}
 
 
