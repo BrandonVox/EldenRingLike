@@ -53,16 +53,15 @@ void AEldenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// EldenAnimInstance
-	if (GetMesh())
-	{
-		EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
-	}
+	if(GetCharacterMovement())
+		DefaultMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 
+	if(GetMesh())
+		EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
+	
 	if (CollisionComponent)
-	{
 		CollisionComponent->HitActorDelegate.AddDynamic(this, &AEldenCharacter::OnHitActor);
-	}
+	
 
 	OnTakePointDamage.AddDynamic(this, &AEldenCharacter::OnTakeDamage);
 }
@@ -244,17 +243,29 @@ void AEldenCharacter::DetectHit()
 	}
 }
 
-
+/*
+* Guard
+*/
 void AEldenCharacter::Guard()
 {
-	if (CombatComponent == nullptr || EldenAnimInstance == nullptr)
+	if (CombatComponent == nullptr || EldenAnimInstance == nullptr || GetCharacterMovement() == nullptr)
 		return;
 
-	if (CombatComponent->CanGuard())
-	{
-		CombatComponent->ToggleGuard(true);
-		EldenAnimInstance->SetIsDefending(true);
-	}
+	CombatComponent->ToggleGuard(true);
+	EldenAnimInstance->SetIsDefending(true);
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+}
+
+void AEldenCharacter::UnGuard()
+{
+	if (CombatComponent == nullptr || EldenAnimInstance == nullptr || GetCharacterMovement() == nullptr)
+		return;
+
+	CombatComponent->ToggleGuard(false);
+	CombatComponent->ResetCombat();
+	EldenAnimInstance->SetIsDefending(false);
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
 }
 
 void AEldenCharacter::EndGuard()
@@ -270,11 +281,9 @@ void AEldenCharacter::Jump()
 		ResetCombat();
 	}
 
-	if (IsDefending() && CombatComponent && EldenAnimInstance)
+	if (IsDefending())
 	{
-		CombatComponent->ToggleGuard(false);
-		ResetCombat();
-		EldenAnimInstance->SetIsDefending(false);
+		UnGuard();
 	}
 
 	Super::Jump();

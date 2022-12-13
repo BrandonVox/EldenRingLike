@@ -78,11 +78,9 @@ void APlayerCharacter::ChargeAttackButtonPressed()
 }
 void APlayerCharacter::RollButtonPressed()
 {
-	if (IsDefending() && CombatComponent && EldenAnimInstance)
+	if (IsDefending())
 	{
-		CombatComponent->ToggleGuard(false);
-		ResetCombat();
-		EldenAnimInstance->SetIsDefending(false);
+		UnGuard();
 	}
 
 	if (CombatComponent)
@@ -106,10 +104,10 @@ void APlayerCharacter::TargetButtonPressed()
 		TargetComponent->RequestFocus();
 	}
 }
-
 void APlayerCharacter::GuardButtonPressed()
 {
-	Guard();
+	if(CombatComponent && CombatComponent->CanGuard())
+		Guard();
 }
 
 void APlayerCharacter::TestDeflectButtonPressed()
@@ -121,13 +119,9 @@ void APlayerCharacter::TestDeflectButtonPressed()
 */
 void APlayerCharacter::GuardButtonReleased()
 {
-	if (CombatComponent == nullptr || EldenAnimInstance == nullptr)
-		return;
-
 	if (IsDefending())
 	{
-		CombatComponent->ToggleGuard(false);
-		EldenAnimInstance->SetIsDefending(false);
+		UnGuard();
 	}
 }
 /*

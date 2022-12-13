@@ -83,7 +83,11 @@ protected:
 		FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
 		FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
 
+	/*
+	* Guard
+	*/
 	void Guard();
+	void UnGuard();
 
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
@@ -114,6 +118,10 @@ protected:
 	*/
 	UPROPERTY()
 	UEldenAnimInstance* EldenAnimInstance;
+	/*
+	* Movement
+	*/
+	float DefaultMaxWalkSpeed = 700.f;
 private:
 
 	
