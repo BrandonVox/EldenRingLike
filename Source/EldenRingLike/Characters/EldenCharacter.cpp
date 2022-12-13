@@ -244,6 +244,19 @@ void AEldenCharacter::DetectHit()
 	}
 }
 
+
+void AEldenCharacter::Guard()
+{
+	if (CombatComponent == nullptr || EldenAnimInstance == nullptr)
+		return;
+
+	if (CombatComponent->CanGuard())
+	{
+		CombatComponent->ToggleGuard(true);
+		EldenAnimInstance->SetIsDefending(true);
+	}
+}
+
 void AEldenCharacter::EndGuard()
 {
 	PlayAnimMontage(EndGuardMontage);
@@ -269,15 +282,6 @@ void AEldenCharacter::Jump()
 
 void AEldenCharacter::OnHitActor(const FHitResult& HitResult)
 {
-	// if sword deflect -> not apply damage
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, HitResult.BoneName.ToString());
-	if (HitResult.BoneName == TEXT("weapon_r"))
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitResult.Location);
-		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitResult.Location);
-		return;
-	}
-
 	UGameplayStatics::ApplyPointDamage(
 		HitResult.GetActor(),
 		20.f, //GetDamageOfLastAttack(),
@@ -290,11 +294,9 @@ void AEldenCharacter::OnHitActor(const FHitResult& HitResult)
 }
 
 // when some one hit you
-void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage,
-	AController* InstigatedBy, FVector HitLocation,
-	UPrimitiveComponent* FHitComponent, FName BoneName,
-	FVector ShotFromDirection, const UDamageType* DamageType,
-	AActor* DamageCauser)
+void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
 {
 
 	if (IsDefending())
@@ -306,6 +308,16 @@ void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage,
 		{
 			CombatComponent->SetCombatState(ECombatState::ECS_Guard);
 		}
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("defending hit"));
+		return;
+	}
+
+	// If not defending but hitted weapon
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, BoneName.ToString());
+	if (BoneName == TEXT("weapon_r"))
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation);
+		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
 		return;
 	}
 

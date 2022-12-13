@@ -109,14 +109,7 @@ void APlayerCharacter::TargetButtonPressed()
 
 void APlayerCharacter::GuardButtonPressed()
 {
-	if (CombatComponent == nullptr || EldenAnimInstance == nullptr)
-		return;
-
-	if (CombatComponent->CanGuard())
-	{
-		CombatComponent->ToggleGuard(true);
-		EldenAnimInstance->SetIsDefending(true);
-	}
+	Guard();
 }
 
 void APlayerCharacter::TestDeflectButtonPressed()

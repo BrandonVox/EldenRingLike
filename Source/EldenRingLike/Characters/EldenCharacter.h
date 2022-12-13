@@ -75,9 +75,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	
-
-
 	UFUNCTION()
 	virtual void OnHitActor(const FHitResult& HitResult);
 
@@ -85,6 +82,8 @@ protected:
 	virtual void OnTakeDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
 		FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName,
 		FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
+
+	void Guard();
 
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);

@@ -26,17 +26,19 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (CombatComponent)
-	{
-		CombatComponent->RequestGuard();
 
-		GetWorldTimerManager().SetTimer(
-			GuardDelayTimer,
-			this,
-			&AEnemyCharacter::DelayGuardTimerFinished,
-			GuardDelaySeconds
-		);
-	}
+	Guard();
+	//if (CombatComponent)
+	//{
+	//	CombatComponent->RequestGuard();
+
+	//	GetWorldTimerManager().SetTimer(
+	//		GuardDelayTimer,
+	//		this,
+	//		&AEnemyCharacter::DelayGuardTimerFinished,
+	//		GuardDelaySeconds
+	//	);
+	//}
 }
 
 void AEnemyCharacter::DelayGuardTimerFinished()
