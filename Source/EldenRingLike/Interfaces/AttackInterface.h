@@ -17,6 +17,7 @@ class ELDENRINGLIKE_API IAttackInterface
 	GENERATED_BODY()
 
 public:
+	virtual void RotateCharacter(const float& DeltaTime) = 0;
 
 	virtual void Combo() = 0;
 	virtual void ChargeAttack() = 0;

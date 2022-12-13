@@ -31,8 +31,6 @@ protected:
 private:
 	IAttackInterface* AttackableObject = nullptr;
 
-
-
 	UPROPERTY()
 	TArray<AActor*> HittedActors;
 

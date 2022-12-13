@@ -3,7 +3,9 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "EldenRingLike/Interfaces/AttackInterface.h"
 #include "ANS_Collision.generated.h"
+
 
 
 UCLASS()
@@ -22,4 +24,7 @@ public:
 		UAnimSequenceBase* Animation, float FrameDeltaTime,
 		const FAnimNotifyEventReference& EventReference) override;
 	
+private:
+	UPROPERTY()
+	TScriptInterface<IAttackInterface> AttackObject;
 };

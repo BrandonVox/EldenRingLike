@@ -23,4 +23,6 @@ class ELDENRINGLIKE_API IGuardInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void EndGuard() = 0;
+
+	virtual void KnockBack(const float& Ammount) = 0;
 };

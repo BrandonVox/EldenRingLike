@@ -35,7 +35,6 @@ public:
 	/*
 	* Anim Notifies
 	*/
-	void RotateCharacter(const float& DeltaTime); 
 	void ResetCombat();
 	/*
 	* Target Interface
@@ -60,6 +59,8 @@ public:
 	/*
 	* Attack Interface
 	*/
+	virtual void RotateCharacter(const float& DeltaTime) override;
+
 	virtual void Combo() override;
 	virtual void ChargeAttack() override;
 	virtual FVector StartHitLocation() override;
@@ -70,7 +71,7 @@ public:
 	* Guard Interface
 	*/
 	virtual void EndGuard() override;
-	
+	virtual void KnockBack(const float& Ammount) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -152,6 +153,9 @@ private:
 	UAnimMontage* EndGuardMontage;
 	UPROPERTY(EditAnywhere, Category = Guard)
 	UAnimMontage* GuardReactMontage;
+
+	UPROPERTY()
+	FVector LastEnemyAttackDirection;
 
 public:	
 };

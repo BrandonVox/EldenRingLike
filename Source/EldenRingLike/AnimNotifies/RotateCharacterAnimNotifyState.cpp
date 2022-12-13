@@ -2,24 +2,19 @@
 
 
 #include "RotateCharacterAnimNotifyState.h"
-#include "EldenRingLike/Characters/EldenCharacter.h"
-
 
 
 void URotateCharacterAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp,
-	UAnimSequenceBase* Animation,
-	float FrameDeltaTime,
+	UAnimSequenceBase* Animation, float FrameDeltaTime,
 	const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if (MeshComp == nullptr)
-	{
-		return;
-	}
-	AEldenCharacter* EldenCharacter = Cast<AEldenCharacter>(MeshComp->GetOwner());
-	if (EldenCharacter)
-	{
-		EldenCharacter->RotateCharacter(FrameDeltaTime);
-	}
+	if(!AttackObject)
+		if(MeshComp)
+			AttackObject = TScriptInterface<IAttackInterface>(MeshComp->GetOwner());
+	
+
+	if (AttackObject)
+		AttackObject->RotateCharacter(FrameDeltaTime);
 }

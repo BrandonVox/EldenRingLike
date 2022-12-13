@@ -66,21 +66,11 @@ void AEldenCharacter::BeginPlay()
 	OnTakePointDamage.AddDynamic(this, &AEldenCharacter::OnTakeDamage);
 }
 
-
-
 void AEldenCharacter::ResetCombat()
 {
 	if (CombatComponent)
 	{
 		CombatComponent->ResetCombat();
-	}
-}
-
-void AEldenCharacter::RotateCharacter(const float& DeltaTime)
-{
-	if (CombatComponent)
-	{
-		CombatComponent->RotateCharacter(DeltaTime);
 	}
 }
 
@@ -191,6 +181,12 @@ FVector AEldenCharacter::GetTargetLocation()
 /*
 * Attack Interface
 */
+void AEldenCharacter::RotateCharacter(const float& DeltaTime)
+{
+	if (CombatComponent)
+		CombatComponent->RotateCharacter(DeltaTime);
+}
+
 void AEldenCharacter::Combo()
 {
 	if (CombatComponent)
@@ -268,9 +264,17 @@ void AEldenCharacter::UnGuard()
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
 }
 
+/*
+* Guard Interface
+*/
 void AEldenCharacter::EndGuard()
 {
 	PlayAnimMontage(EndGuardMontage);
+}
+void AEldenCharacter::KnockBack(const float& Ammount)
+{
+	FVector NewActorLocation = GetActorLocation() + (LastEnemyAttackDirection * Ammount);
+	SetActorLocation(NewActorLocation);
 }
 
 void AEldenCharacter::Jump()
@@ -302,37 +306,7 @@ void AEldenCharacter::OnHitActor(const FHitResult& HitResult)
 	);
 }
 
-// when some one hit you
-void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
-	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
-	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
-{
 
-	if (IsDefending())
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation);
-		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
-		PlayAnimMontage(GuardReactMontage);
-		if (CombatComponent)
-		{
-			CombatComponent->SetCombatState(ECombatState::ECS_Guard);
-		}
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("defending hit"));
-		return;
-	}
-
-	// If not defending but hitted weapon
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, BoneName.ToString());
-	if (BoneName == TEXT("weapon_r"))
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation);
-		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
-		return;
-	}
-
-	HandleHitted(HitLocation, ShotFromDirection);
-
-}
 
 void AEldenCharacter::HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection)
 {
@@ -371,6 +345,39 @@ void AEldenCharacter::StopAllMontages(const float& BlendOutSeconds)
 	}
 }
 
+
+
+// Someone hit you ><
+void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
+{
+	
+	// Knock back
+	if (IsDefending())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation);
+		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
+		LastEnemyAttackDirection = ShotFromDirection;
+		PlayAnimMontage(GuardReactMontage);
+		if (CombatComponent)
+			CombatComponent->SetCombatState(ECombatState::ECS_Guard);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("defending hit"));
+		return;
+	}
+
+	// If not defending but hitted weapon
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, BoneName.ToString());
+	if (BoneName == TEXT("weapon_r"))
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation);
+		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
+		return;
+	}
+
+	HandleHitted(HitLocation, ShotFromDirection);
+
+}
 
 
 
