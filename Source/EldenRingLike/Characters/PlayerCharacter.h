@@ -31,6 +31,7 @@ protected:
 	void ChargeAttackButtonPressed();
 	void RollButtonPressed();
 	void TargetButtonPressed();
+	void GuardButtonPressed();
 	void TestDeflectButtonPressed();
 	/*
 	* Axes

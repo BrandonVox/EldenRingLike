@@ -1,45 +1,50 @@
+
 #include "EldenAnimInstance.h"
-#include "GameFramework/Character.h" // Character
-#include "GameFramework/CharacterMovementComponent.h" // Character->GetCharacterMovement()
+#include "EldenRingLike/Characters/EldenCharacter.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+
 
 void UEldenAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	Character = Cast<ACharacter>(TryGetPawnOwner());
+	EldenCharacter = Cast<AEldenCharacter>(TryGetPawnOwner());
+
+	// listen elden?????
 }
 
 void UEldenAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (Character == nullptr)
+	if (EldenCharacter == nullptr)
 	{
-		Character = Cast<ACharacter>(TryGetPawnOwner());
+		EldenCharacter = Cast<AEldenCharacter>(TryGetPawnOwner());
 	}
 
-	if (Character == nullptr)
+	if (EldenCharacter == nullptr)
 	{
 		return;
 	}
 
 	// Speed
-	FVector Velocity = Character->GetVelocity();
+	FVector Velocity = EldenCharacter->GetVelocity();
 	Velocity.Z = 0.f;
 	Speed = Velocity.Size();
 
 	// Jump
-	bIsJumping = Character->IsJumpProvidingForce();
-	bIsInAir = Character->GetCharacterMovement()->IsFalling();
+	bIsJumping = EldenCharacter->IsJumpProvidingForce();
+	bIsInAir = EldenCharacter->GetCharacterMovement()->IsFalling();
 	
 	// Accelerating
-	bIsAccelerating = Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
+	bIsAccelerating = EldenCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 
 	/*
 	* Strafe
 	*/
 	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
-	const FRotator& AimRotation = Character->GetBaseAimRotation();
+	const FRotator& AimRotation = EldenCharacter->GetBaseAimRotation();
 
 	if (Speed > 0.f)
 	{

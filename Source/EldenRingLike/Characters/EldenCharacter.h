@@ -6,7 +6,10 @@
 #include "EldenRingLike/Interfaces/TargetInterface.h"
 #include "EldenRingLike/Interfaces/TargetedInterface.h"
 #include "EldenRingLike/Interfaces/AttackInterface.h"
+#include "EldenRingLike/Interfaces/GuardInterface.h"
 #include "EldenCharacter.generated.h"
+
+class UEldenAnimInstance;
 
 class UCombatComponent;
 class UTargetComponent;
@@ -17,7 +20,8 @@ class ELDENRINGLIKE_API AEldenCharacter :
 	public ACharacter, 
 	public ITargetInterface, 
 	public ITargetedInterface,
-	public IAttackInterface
+	public IAttackInterface,
+	public IGuardInterface
 {
 	GENERATED_BODY()
 
@@ -60,6 +64,10 @@ public:
 	virtual FVector EndHitLocation() override;
 	virtual void SetupHitDetection() override;
 	virtual void DetectHit() override;
+	/*
+	* Guard Interface
+	*/
+	virtual void EndGuard() override;
 	
 
 protected:
@@ -78,7 +86,8 @@ protected:
 
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
-	const bool IsAttacking();
+	bool IsAttacking() const;
+	bool IsDefending() const;
 	void StopAllMontages(const float& BlendOutSeconds = 0.3f);
 
 protected:
@@ -100,6 +109,11 @@ protected:
 	UParticleSystem* SwordDeflectImpact;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* SwordDeflectMontage;
+	/*
+	* Elden Animinstance
+	*/
+	UPROPERTY()
+	UEldenAnimInstance* EldenAnimInstance;
 private:
 
 	
@@ -122,6 +136,12 @@ private:
 	UParticleSystem* HitImpact;
 	UPROPERTY(EditAnywhere, Category = Hitted)
 	UAnimMontage* HitMontage_Front;
+
+	/*
+	* Guard
+	*/
+	UPROPERTY(EditAnywhere, Category = Guard)
+	UAnimMontage* EndGuardMontage;
 
 public:	
 };

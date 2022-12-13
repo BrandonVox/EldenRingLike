@@ -4,7 +4,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EldenRingLike/CustomComponents/TargetComponent.h"
-#include "EldenRingLike/CustomComponents/CombatComponent.h" // CombatComponent
+#include "EldenRingLike/CustomComponents/CombatComponent.h"
+#include "EldenRingLike/AnimInstances/EldenAnimInstance.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -32,6 +33,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("ChargeAttack", IE_Pressed, this, &APlayerCharacter::ChargeAttackButtonPressed);
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &APlayerCharacter::RollButtonPressed);
 	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &APlayerCharacter::TargetButtonPressed);
+	PlayerInputComponent->BindAction("Guard", IE_Pressed, this, &APlayerCharacter::GuardButtonPressed);
 	PlayerInputComponent->BindAction("TestDeflect", IE_Pressed, this, &APlayerCharacter::TestDeflectButtonPressed);
 	/*
 	* Axes
@@ -92,6 +94,15 @@ void APlayerCharacter::TargetButtonPressed()
 		TargetComponent->RequestFocus();
 	}
 }
+
+void APlayerCharacter::GuardButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->RequestGuard();
+	}
+}
+
 void APlayerCharacter::TestDeflectButtonPressed()
 {
 	PlayAnimMontage(SwordDeflectMontage);

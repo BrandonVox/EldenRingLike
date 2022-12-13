@@ -5,7 +5,7 @@
 #include "EldenRingLike/Types/Types.h"
 #include "EldenAnimInstance.generated.h"
 
-class ACharacter;
+class AEldenCharacter;
 
 UCLASS()
 class ELDENRINGLIKE_API UEldenAnimInstance : public UAnimInstance
@@ -18,7 +18,7 @@ public:
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	ACharacter* Character;
+	AEldenCharacter* EldenCharacter;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float Speed;
@@ -35,7 +35,6 @@ private:
 	/*
 	* Strafe
 	*/
-
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FRotator StrafeRotation;
 
@@ -48,6 +47,13 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool bIsTargeting = false;
 
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bIsDefending = false;
+
 public:
-	FORCEINLINE void SetIsTargeting(const bool& Value) { bIsTargeting = Value; }
+	/*
+	* Setters
+	*/
+	FORCEINLINE void SetIsTargeting(const bool& bValue) { bIsTargeting = bValue; }
+	FORCEINLINE void SetIsDefending(bool bValue) { bIsDefending = bValue; }
 };

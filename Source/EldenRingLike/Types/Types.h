@@ -4,6 +4,7 @@ enum class ECombatState : uint8
 {
 	ECS_Free UMETA(DisplayName = "Free"),
 	ECS_Attack UMETA(DisplayName = "Attack"),
+	ECS_Guard UMETA(DisplayName = "Guard"),
 	ECS_Roll UMETA(DisplayName = "Roll"),
 	ECS_Hitted UMETA(DisplayName = "Hitted")
 };

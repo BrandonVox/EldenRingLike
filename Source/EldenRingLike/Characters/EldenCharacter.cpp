@@ -1,14 +1,11 @@
 #include "EldenCharacter.h"
 
-
-#include "GameFramework/CharacterMovementComponent.h" // GetCharacterMovement()
-#include "EldenRingLike/CustomComponents/CombatComponent.h" // CombatComponent
-#include "EldenRingLike/CustomComponents/TargetComponent.h" // TargetComponent
+#include "EldenRingLike/AnimInstances/EldenAnimInstance.h"
+#include "EldenRingLike/CustomComponents/CombatComponent.h"
+#include "EldenRingLike/CustomComponents/TargetComponent.h"
 #include "EldenRingLike/CustomComponents/CollisionComponent.h"
 
-#include "EldenRingLike/AnimInstances/EldenAnimInstance.h"
-
-
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AEldenCharacter::AEldenCharacter()
@@ -55,6 +52,12 @@ void AEldenCharacter::PostInitializeComponents()
 void AEldenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// EldenAnimInstance
+	if (GetMesh())
+	{
+		EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
+	}
 
 	if (CollisionComponent)
 	{
@@ -110,13 +113,9 @@ FVector AEldenCharacter::EndLocationToFindTarget()
 
 void AEldenCharacter::StartFocusing(const bool& bDoTarget)
 {
-	if (GetMesh())
+	if (EldenAnimInstance)
 	{
-		UEldenAnimInstance* EldenAnimInstance = Cast<UEldenAnimInstance>(GetMesh()->GetAnimInstance());
-		if (EldenAnimInstance)
-		{
-			EldenAnimInstance->SetIsTargeting(bDoTarget);
-		}
+		EldenAnimInstance->SetIsTargeting(bDoTarget);
 	}
 	
 	if (GetCharacterMovement())
@@ -245,16 +244,19 @@ void AEldenCharacter::DetectHit()
 	}
 }
 
-
+void AEldenCharacter::EndGuard()
+{
+	PlayAnimMontage(EndGuardMontage);
+}
 
 void AEldenCharacter::Jump()
 {
-	if (IsRolling())
-	{
-		return;
-	}
+	//if (IsRolling())
+	//{
+	//	return;
+	//}
 
-	if (IsAttacking())
+	if (IsAttacking() || IsDefending())
 	{
 		StopAllMontages();
 		ResetCombat();
@@ -321,7 +323,7 @@ void AEldenCharacter::HandleHitted(const FVector& HitLocation, const FVector& Sh
 
 }
 
-const bool AEldenCharacter::IsAttacking()
+bool AEldenCharacter::IsAttacking() const
 {
 	if (CombatComponent == nullptr)
 	{
@@ -330,17 +332,20 @@ const bool AEldenCharacter::IsAttacking()
 	return CombatComponent->IsAttacking();
 }
 
+bool AEldenCharacter::IsDefending() const
+{
+	if (CombatComponent == nullptr)
+	{
+		return false;
+	}
+	return CombatComponent->IsDefending();
+}
+
 void AEldenCharacter::StopAllMontages(const float& BlendOutSeconds)
 {
-	if(GetMesh() == nullptr)
+	if (EldenAnimInstance)
 	{
-		return;
-	}
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance)
-	{
-		AnimInstance->StopAllMontages(BlendOutSeconds);
+		EldenAnimInstance->StopAllMontages(BlendOutSeconds);
 	}
 }
 

@@ -11,7 +11,6 @@ UCombatComponent::UCombatComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -22,12 +21,9 @@ void UCombatComponent::BeginPlay()
 	}
 }
 
-//void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-//{
-//	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-//
-//}
-
+/*
+* Attack
+*/
 void UCombatComponent::RequestAttack(const EAttackType& AttackType)
 {
 	if (CombatState == ECombatState::ECS_Attack)
@@ -40,6 +36,67 @@ void UCombatComponent::RequestAttack(const EAttackType& AttackType)
 	if (CanAttack())
 	{
 		Attack(AttackType);
+	}
+}
+
+bool UCombatComponent::CanAttack()
+{
+	return CombatState == ECombatState::ECS_Free;
+}
+
+void UCombatComponent::Attack(EAttackType AttackType)
+{
+
+	// override attack type if is in air
+	if (AttackType == EAttackType::EAT_NormalAttack && IsInAir())
+	{
+		AttackType = EAttackType::EAT_AirAttack;
+	}
+
+	UAnimMontage* MontageToPlay = GetAttackMontage(AttackType);
+	if (MontageToPlay)
+	{
+		PlayAnimMontage(MontageToPlay);
+		CombatState = ECombatState::ECS_Attack;
+		LastAttackType = AttackType;
+		AttackIndex++;
+	}
+}
+
+/*
+* Guard
+*/
+void UCombatComponent::RequestGuard()
+{
+	if (CanGuard())
+	{
+		Guard();
+	}
+}
+
+bool UCombatComponent::CanGuard()
+{
+	return CombatState == ECombatState::ECS_Free;
+}
+
+void UCombatComponent::Guard()
+{
+	if (StartGuardMontage)
+	{
+		PlayAnimMontage(StartGuardMontage);
+		CombatState = ECombatState::ECS_Guard;
+	}
+}
+
+void UCombatComponent::ToggleGuard(const bool& bGuard)
+{
+	if (bGuard)
+	{
+		CombatState = ECombatState::ECS_Guard;
+	}
+	else
+	{
+		ResetCombat();
 	}
 }
 
@@ -57,17 +114,14 @@ void UCombatComponent::RequestRoll()
 	}
 }
 
-bool UCombatComponent::CanAttack()
-{
-	return CombatState == ECombatState::ECS_Free;
-}
-
 
 
 bool UCombatComponent::CanRoll()
 {
 	return
-		CombatState == ECombatState::ECS_Free || CombatState == ECombatState::ECS_Attack;
+		CombatState == ECombatState::ECS_Free 
+		|| CombatState == ECombatState::ECS_Attack
+		|| CombatState == ECombatState::ECS_Guard;
 }
 
 bool UCombatComponent::IsInAir()
@@ -137,24 +191,7 @@ void UCombatComponent::HandleFinishRoll()
 }
 
 
-void UCombatComponent::Attack(EAttackType AttackType)
-{
 
-	// override attack type if is in air
-	if (AttackType == EAttackType::EAT_NormalAttack && IsInAir())
-	{
-		AttackType = EAttackType::EAT_AirAttack;
-	}
-
-	UAnimMontage* MontageToPlay = GetAttackMontage(AttackType);
-	if (MontageToPlay)
-	{
-		PlayAnimMontage(MontageToPlay);
-		CombatState = ECombatState::ECS_Attack;
-		LastAttackType = AttackType;
-		AttackIndex ++;
-	}
-}
 
 void UCombatComponent::PlayAnimMontage(UAnimMontage* MontageToPlay)
 {

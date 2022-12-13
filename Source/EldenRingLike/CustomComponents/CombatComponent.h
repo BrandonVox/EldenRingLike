@@ -19,6 +19,7 @@ public:
 	// virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void RequestAttack(const EAttackType& AttackType);
+	void RequestGuard();
 	void RequestRoll();
 
 
@@ -32,17 +33,32 @@ public:
 	const bool IsAttacking_Air();
 	const bool IsAttacking_ChargeAttack();
 
+
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	/*
+	* Attack
+	*/
 	bool CanAttack();
-	bool CanCombo();
-	bool CanRoll();
-	bool IsInAir();
 	void Attack(EAttackType AttackType);
-	void PlayAnimMontage(UAnimMontage* MontageToPlay);
+	bool CanCombo();
+	/*
+	* Guard
+	*/
+	bool CanGuard();
+	void Guard();
+	void ToggleGuard(const bool& bGuard);
+	/*
+	* Roll
+	*/
+	bool CanRoll();
 	void Roll();
+
+	bool IsInAir();
+	void PlayAnimMontage(UAnimMontage* MontageToPlay);
 	void HandleFinishRoll();
 	FRotator GetRollRotation();
 	UAnimMontage* GetAttackMontage(const EAttackType& AttackType);
@@ -60,6 +76,9 @@ private:
 	EAttackType LastAttackType = EAttackType::EAT_NormalAttack;
 	EAttackType SaveAttackType = EAttackType::EAT_NormalAttack;
 
+	/*
+	* Attack Montages
+	*/
 	UPROPERTY(EditAnywhere, Category = Attack)
 	TArray<UAnimMontage*> NormalAttackMontages;
 
@@ -73,6 +92,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = Attack)
 	UAnimMontage* ChargeAttackMontage;
 
+	/*
+	* Guard
+	*/
+	UPROPERTY(EditAnywhere, Category = Guard)
+	UAnimMontage* StartGuardMontage;
+
+	/*
+	* Roll
+	*/
 	UPROPERTY(EditAnywhere, Category = Roll)
 	UAnimMontage* RollMontage;
 
@@ -81,14 +109,15 @@ private:
 
 public:
 	/*
-	* Getters
+	* Setters
 	*/
 	FORCEINLINE void SetCharacter(ACharacter* Value) { Character = Value; }
 	FORCEINLINE void SetCombatState(const ECombatState& Value) { CombatState = Value; }
 
 	/*
-	* Setters
+	* Getters
 	*/
-	FORCEINLINE const bool IsAttacking() { return CombatState == ECombatState::ECS_Attack; }
-	FORCEINLINE const bool IsRolling() { return CombatState == ECombatState::ECS_Roll; }
+	FORCEINLINE bool IsAttacking() const { return CombatState == ECombatState::ECS_Attack; }
+	FORCEINLINE bool IsDefending() const { return CombatState == ECombatState::ECS_Guard; }
+	FORCEINLINE bool IsRolling() const {  return CombatState == ECombatState::ECS_Roll; }
 };
