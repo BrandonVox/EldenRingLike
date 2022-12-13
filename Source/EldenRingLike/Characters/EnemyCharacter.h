@@ -20,4 +20,20 @@ public:
 	*/
 	virtual void FocusBack(AActor* EnemyActor) override;
 	virtual void UnTargeted() override;
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	void DelayGuardTimerFinished();
+
+private:
+	/*
+	* Test
+	*/
+	UPROPERTY()
+	FTimerHandle GuardDelayTimer;
+
+	UPROPERTY(EditAnywhere, Category = Test)
+	float GuardDelaySeconds = 2.f;
 };

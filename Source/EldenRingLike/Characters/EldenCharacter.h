@@ -71,7 +71,7 @@ public:
 	
 
 protected:
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	
 
@@ -142,6 +142,8 @@ private:
 	*/
 	UPROPERTY(EditAnywhere, Category = Guard)
 	UAnimMontage* EndGuardMontage;
+	UPROPERTY(EditAnywhere, Category = Guard)
+	UAnimMontage* GuardReactMontage;
 
 public:	
 };
