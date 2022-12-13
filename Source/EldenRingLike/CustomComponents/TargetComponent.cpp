@@ -97,9 +97,11 @@ void UTargetComponent::FocusBack(AActor* EnemyActor)
 void UTargetComponent::UnFocus()
 {
 	bIsTargeting = false;
-	FocusObject->StartFocusing(false);
+	if(FocusObject)
+		FocusObject->StartFocusing(false);
 
-	TargetObject->UnTargeted();
+	if(TargetObject)
+		TargetObject->UnTargeted();
 	TargetObject = nullptr;
 }
 

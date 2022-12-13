@@ -273,16 +273,14 @@ void AEldenCharacter::Jump()
 
 void AEldenCharacter::OnHitActor(const FHitResult& HitResult)
 {
-
 	// if sword deflect -> not apply damage
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, HitResult.BoneName.ToString());
 	if (HitResult.BoneName == TEXT("weapon_r"))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitResult.Location, FRotator());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitResult.Location);
 		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitResult.Location);
 		return;
 	}
-
 
 	UGameplayStatics::ApplyPointDamage(
 		HitResult.GetActor(),
@@ -303,9 +301,18 @@ void AEldenCharacter::OnTakeDamage(AActor* DamagedActor, float Damage,
 	AActor* DamageCauser)
 {
 
+	if (IsDefending())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwordDeflectImpact, HitLocation);
+		UGameplayStatics::PlaySoundAtLocation(this, SwordDeflectSound, HitLocation);
+		PlayAnimMontage(GuardReactMontage);
+		if (CombatComponent)
+		{
+			CombatComponent->SetCombatState(ECombatState::ECS_Guard);
+		}
+		return;
+	}
 
-	
-	
 	HandleHitted(HitLocation, ShotFromDirection);
 
 }
@@ -315,12 +322,10 @@ void AEldenCharacter::HandleHitted(const FVector& HitLocation, const FVector& Sh
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpact, HitLocation, FRotator());
 	UGameplayStatics::PlaySoundAtLocation(this, HitSound, HitLocation);
 	PlayAnimMontage(HitMontage_Front);
-
 	if (CombatComponent)
 	{
 		CombatComponent->SetCombatState(ECombatState::ECS_Hitted);
 	}
-
 }
 
 bool AEldenCharacter::IsAttacking() const
