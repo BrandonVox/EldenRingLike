@@ -30,6 +30,8 @@ public:
 	virtual void PostInitializeComponents() override;
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
+	bool IsAttacking() const;
+	bool IsDefending() const;
 	/*
 	* Anim Notifies
 	*/
@@ -86,8 +88,7 @@ protected:
 
 private:
 	void HandleHitted(const FVector& HitLocation, const FVector& ShotFromDirection);
-	bool IsAttacking() const;
-	bool IsDefending() const;
+
 	void StopAllMontages(const float& BlendOutSeconds = 0.3f);
 
 protected:

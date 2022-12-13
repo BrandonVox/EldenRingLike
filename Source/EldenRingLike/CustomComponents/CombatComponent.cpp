@@ -118,10 +118,8 @@ void UCombatComponent::RequestRoll()
 
 bool UCombatComponent::CanRoll()
 {
-	return
-		CombatState == ECombatState::ECS_Free 
-		|| CombatState == ECombatState::ECS_Attack
-		|| CombatState == ECombatState::ECS_Guard;
+	return CombatState == ECombatState::ECS_Free 
+		|| CombatState == ECombatState::ECS_Attack;
 }
 
 bool UCombatComponent::IsInAir()

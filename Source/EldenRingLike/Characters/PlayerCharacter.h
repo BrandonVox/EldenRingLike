@@ -34,6 +34,10 @@ protected:
 	void GuardButtonPressed();
 	void TestDeflectButtonPressed();
 	/*
+	* Action Released
+	*/
+	void GuardButtonReleased();
+	/*
 	* Axes
 	*/
 	void MoveForward(float Value);

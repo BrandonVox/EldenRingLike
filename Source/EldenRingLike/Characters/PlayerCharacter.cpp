@@ -36,6 +36,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Guard", IE_Pressed, this, &APlayerCharacter::GuardButtonPressed);
 	PlayerInputComponent->BindAction("TestDeflect", IE_Pressed, this, &APlayerCharacter::TestDeflectButtonPressed);
 	/*
+	* Action Released
+	*/
+	PlayerInputComponent->BindAction("Guard", IE_Released, this, &APlayerCharacter::GuardButtonReleased);
+
+	/*
 	* Axes
 	*/
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
@@ -73,6 +78,13 @@ void APlayerCharacter::ChargeAttackButtonPressed()
 }
 void APlayerCharacter::RollButtonPressed()
 {
+	if (IsDefending() && CombatComponent && EldenAnimInstance)
+	{
+		CombatComponent->ToggleGuard(false);
+		ResetCombat();
+		EldenAnimInstance->SetIsDefending(false);
+	}
+
 	if (CombatComponent)
 	{
 		CombatComponent->RequestRoll();
@@ -97,15 +109,33 @@ void APlayerCharacter::TargetButtonPressed()
 
 void APlayerCharacter::GuardButtonPressed()
 {
-	if (CombatComponent)
+	if (CombatComponent == nullptr || EldenAnimInstance == nullptr)
+		return;
+
+	if (CombatComponent->CanGuard())
 	{
-		CombatComponent->RequestGuard();
+		CombatComponent->ToggleGuard(true);
+		EldenAnimInstance->SetIsDefending(true);
 	}
 }
 
 void APlayerCharacter::TestDeflectButtonPressed()
 {
 	PlayAnimMontage(SwordDeflectMontage);
+}
+/*
+* Action Released
+*/
+void APlayerCharacter::GuardButtonReleased()
+{
+	if (CombatComponent == nullptr || EldenAnimInstance == nullptr)
+		return;
+
+	if (IsDefending())
+	{
+		CombatComponent->ToggleGuard(false);
+		EldenAnimInstance->SetIsDefending(false);
+	}
 }
 /*
 * Axes

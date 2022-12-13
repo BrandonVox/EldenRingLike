@@ -251,25 +251,21 @@ void AEldenCharacter::EndGuard()
 
 void AEldenCharacter::Jump()
 {
-	//if (IsRolling())
-	//{
-	//	return;
-	//}
-
-	if (IsAttacking() || IsDefending())
+	if (IsAttacking())
 	{
 		StopAllMontages();
 		ResetCombat();
 	}
 
+	if (IsDefending() && CombatComponent && EldenAnimInstance)
+	{
+		CombatComponent->ToggleGuard(false);
+		ResetCombat();
+		EldenAnimInstance->SetIsDefending(false);
+	}
+
 	Super::Jump();
 }
-
-
-
-
-
-
 
 void AEldenCharacter::OnHitActor(const FHitResult& HitResult)
 {

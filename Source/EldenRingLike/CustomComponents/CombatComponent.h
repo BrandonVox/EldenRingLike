@@ -35,6 +35,13 @@ public:
 
 
 
+	/*
+	* Guard
+	*/
+	bool CanGuard();
+	void ToggleGuard(const bool& bGuard);
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -48,9 +55,7 @@ private:
 	/*
 	* Guard
 	*/
-	bool CanGuard();
 	void Guard();
-	void ToggleGuard(const bool& bGuard);
 	/*
 	* Roll
 	*/
