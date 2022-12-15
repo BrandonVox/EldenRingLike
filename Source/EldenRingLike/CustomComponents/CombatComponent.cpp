@@ -81,9 +81,9 @@ bool UCombatComponent::CanGuard()
 
 void UCombatComponent::Guard()
 {
-	if (StartGuardMontage)
+	if (GuardMontage)
 	{
-		PlayAnimMontage(StartGuardMontage);
+		PlayAnimMontage(GuardMontage);
 		CombatState = ECombatState::ECS_Guard;
 	}
 }

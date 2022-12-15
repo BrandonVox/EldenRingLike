@@ -106,8 +106,10 @@ void APlayerCharacter::TargetButtonPressed()
 }
 void APlayerCharacter::GuardButtonPressed()
 {
-	if(CombatComponent && CombatComponent->CanGuard())
-		Guard();
+	//if(CombatComponent && CombatComponent->CanGuard())
+	//	Guard();
+	if (CombatComponent)
+		CombatComponent->RequestGuard();
 }
 
 void APlayerCharacter::TestDeflectButtonPressed()

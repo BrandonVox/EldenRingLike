@@ -101,7 +101,7 @@ private:
 	* Guard
 	*/
 	UPROPERTY(EditAnywhere, Category = Guard)
-	UAnimMontage* StartGuardMontage;
+	UAnimMontage* GuardMontage;
 
 	/*
 	* Roll

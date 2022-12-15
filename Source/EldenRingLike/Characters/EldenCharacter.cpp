@@ -279,15 +279,10 @@ void AEldenCharacter::KnockBack(const float& Ammount)
 
 void AEldenCharacter::Jump()
 {
-	if (IsAttacking())
+	if (IsAttacking() || IsDefending())
 	{
 		StopAllMontages();
 		ResetCombat();
-	}
-
-	if (IsDefending())
-	{
-		UnGuard();
 	}
 
 	Super::Jump();
