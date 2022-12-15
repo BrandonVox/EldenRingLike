@@ -27,9 +27,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-
-
-
 private:
 	void DelayGuardTimerFinished();
 	bool CloseEnoughToPlayer();
@@ -52,6 +49,6 @@ private:
 	float AttackableRadius = 110.f;
 
 	// change
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY()
 	AActor* PlayerActor;
 };

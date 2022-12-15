@@ -27,13 +27,24 @@ void AEnemyCharacter::Tick(float DeltaTime)
 {
 	// change, xem thu class cha co phai la character khong?
 	Super::Tick(DeltaTime);
+
+	if (CloseEnoughToPlayer())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("close to player"));
+		if (CombatComponent)
+			CombatComponent->RequestAttack(EAttackType::EAT_NormalAttack);
+	}
+	else
+		MoveToPlayer();
 }
 
 bool AEnemyCharacter::CloseEnoughToPlayer()
 {
-	if(PlayerActor)
-		return GetDistanceTo(PlayerActor) <= AttackableRadius;
-	return false;
+	// change
+	if (PlayerActor == nullptr)
+		return false;
+
+	return GetDistanceTo(PlayerActor) <= AttackableRadius;
 }
 
 void AEnemyCharacter::MoveToPlayer()
@@ -67,8 +78,10 @@ void AEnemyCharacter::FocusBack(AActor* TargetActor)
 	if (TargetComponent)
 	{
 		TargetComponent->FocusBack(TargetActor);
-		MoveToPlayer();
-	
+		/*
+		* change
+		*/
+		PlayerActor = TargetActor;
 	}
 }
 

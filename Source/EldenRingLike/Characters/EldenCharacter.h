@@ -43,7 +43,7 @@ public:
 	virtual FVector EndLocationToFindTarget() override;
 	virtual void StartFocusing(const bool& bDoTarget) override;
 
-	virtual float GetDistanceTo(const AActor* OtherActor) override;
+	virtual float GetDistanceTo_Custom(AActor* OtherActor) override;
 	virtual bool IsTargeting() override;
 	virtual bool IsRolling() override;
 

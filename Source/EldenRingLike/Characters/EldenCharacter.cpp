@@ -126,7 +126,7 @@ void AEldenCharacter::SetObjectRotation(const FRotator& NewRotation)
 	SetActorRotation(NewRotation);
 }
 
-float AEldenCharacter::GetDistanceTo(const AActor* OtherActor)
+float AEldenCharacter::GetDistanceTo_Custom(AActor* OtherActor)
 {
 	return GetDistanceTo(OtherActor);
 }

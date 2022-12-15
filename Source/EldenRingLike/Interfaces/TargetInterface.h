@@ -36,7 +36,7 @@ public:
 
 	virtual FRotator ControllerYawRotation() = 0;
 
-	virtual float GetDistanceTo(const AActor* OtherActor) = 0;
+	virtual float GetDistanceTo_Custom(AActor* OtherActor) = 0;
 
 	virtual bool IsTargeting() = 0;
 
