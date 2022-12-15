@@ -4,41 +4,47 @@
 #include "EldenRingLike/CustomComponents/TargetComponent.h"
 #include "EldenRingLike/CustomComponents/CombatComponent.h"
 
-/*
-* Targeted Interface
-*/
-void AEnemyCharacter::FocusBack(AActor* EnemyActor)
+#include "AIController.h"
+
+
+AEnemyCharacter::AEnemyCharacter()
 {
-	if (TargetComponent)
-	{
-		TargetComponent->FocusBack(EnemyActor);
-	}
+	PrimaryActorTick.bCanEverTick = true;
 }
-void AEnemyCharacter::UnTargeted()
-{
-	if (TargetComponent)
-	{
-		TargetComponent->UnTargeted();
-	}
-}
+
 
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// look
+	AIController = Cast<AAIController>(GetController());
 
-	Guard();
-	//if (CombatComponent)
-	//{
-	//	CombatComponent->RequestGuard();
+	// Guard();
+}
 
-	//	GetWorldTimerManager().SetTimer(
-	//		GuardDelayTimer,
-	//		this,
-	//		&AEnemyCharacter::DelayGuardTimerFinished,
-	//		GuardDelaySeconds
-	//	);
-	//}
+void AEnemyCharacter::Tick(float DeltaTime)
+{
+	// change, xem thu class cha co phai la character khong?
+	Super::Tick(DeltaTime);
+}
+
+bool AEnemyCharacter::CloseEnoughToPlayer()
+{
+	if(PlayerActor)
+		return GetDistanceTo(PlayerActor) <= AttackableRadius;
+	return false;
+}
+
+void AEnemyCharacter::MoveToPlayer()
+{
+	if (!PlayerActor || !AIController)
+		return;
+	FAIMoveRequest MoveRequest;
+
+	MoveRequest.SetGoalActor(PlayerActor);
+	MoveRequest.SetAcceptanceRadius(AttackableRadius);
+	AIController->MoveTo(MoveRequest);
 }
 
 void AEnemyCharacter::DelayGuardTimerFinished()
@@ -51,4 +57,24 @@ void AEnemyCharacter::DelayGuardTimerFinished()
 		&AEnemyCharacter::DelayGuardTimerFinished,
 		GuardDelaySeconds
 	);
+}
+
+/*
+* Targeted Interface
+*/
+void AEnemyCharacter::FocusBack(AActor* TargetActor)
+{
+	if (TargetComponent)
+	{
+		TargetComponent->FocusBack(TargetActor);
+		MoveToPlayer();
+	}
+}
+
+void AEnemyCharacter::UnTargeted()
+{
+	if (TargetComponent)
+	{
+		TargetComponent->UnTargeted();
+	}
 }

@@ -6,28 +6,38 @@
 #include "EldenCharacter.h"
 #include "EnemyCharacter.generated.h"
 
-/**
- * 
- */
+
+class AAIController;
+class AActor;
+
 UCLASS()
 class ELDENRINGLIKE_API AEnemyCharacter : public AEldenCharacter
 {
 	GENERATED_BODY()
 
 public:
+	AEnemyCharacter();
+	virtual void Tick(float DeltaTime) override;
 	/*
 	* Targeted Interface
 	*/
-	virtual void FocusBack(AActor* EnemyActor) override;
+	virtual void FocusBack(AActor* TargetActor) override;
 	virtual void UnTargeted() override;
 
 protected:
 	virtual void BeginPlay() override;
 
-private:
-	void DelayGuardTimerFinished();
+
+
 
 private:
+	void DelayGuardTimerFinished();
+	bool CloseEnoughToPlayer();
+	void MoveToPlayer();
+
+private:
+	UPROPERTY()
+	AAIController* AIController;
 	/*
 	* Test
 	*/
@@ -36,4 +46,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Test)
 	float GuardDelaySeconds = 2.f;
+
+	bool bMoveToPlayer = false;
+	UPROPERTY(EditAnywhere, Category = Attack)
+	float AttackableRadius = 110.f;
+
+	// change
+	UPROPERTY(EditInstanceOnly)
+	AActor* PlayerActor;
 };

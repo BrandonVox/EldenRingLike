@@ -18,6 +18,6 @@ class ELDENRINGLIKE_API ITargetedInterface
 
 public:
 	virtual FVector GetTargetLocation() = 0;
-	virtual void FocusBack(AActor* EnemyActor);
+	virtual void FocusBack(AActor* TargetActor);
 	virtual void UnTargeted();
 };
