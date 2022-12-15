@@ -43,7 +43,7 @@ void AEnemyCharacter::MoveToPlayer()
 	FAIMoveRequest MoveRequest;
 
 	MoveRequest.SetGoalActor(PlayerActor);
-	MoveRequest.SetAcceptanceRadius(AttackableRadius);
+	MoveRequest.SetAcceptanceRadius(AttackableRadius - 75.f);
 	AIController->MoveTo(MoveRequest);
 }
 
@@ -68,6 +68,7 @@ void AEnemyCharacter::FocusBack(AActor* TargetActor)
 	{
 		TargetComponent->FocusBack(TargetActor);
 		MoveToPlayer();
+	
 	}
 }
 
